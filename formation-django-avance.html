@@ -1,47 +1,48 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
-        <meta charset="utf-8" />
         <title>Formation Django avancé</title>
-        <link rel="stylesheet" href="http://intuitivo.fr/theme/css/main.css" />
-        <link href="http://intuitivo.fr/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Intuitivo - Formations sur Python et Django Atom Feed" />
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="http://intuitivo.fr/theme/css/main.css" type="text/css" />
+        <link href="http://intuitivo.fr/" type="application/atom+xml" rel="alternate" title="Intuitivo - Formations sur Python et Django Flux ATOM" />
+
 
         <!--[if IE]>
-            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+                <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+        <!--[if lte IE 7]>
+                <link rel="stylesheet" type="text/css" media="all" href="http://intuitivo.fr/css/ie.css"/>
+                <script src="http://intuitivo.fr/js/IE8.js" type="text/javascript"></script><![endif]-->
+
+        <!--[if lt IE 7]>
+                <link rel="stylesheet" type="text/css" media="all" href="http://intuitivo.fr/css/ie6.css"/><![endif]-->
+
 </head>
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="http://intuitivo.fr/">Intuitivo - Formations sur Python et Django </a></h1>
+                <h1><a href="http://intuitivo.fr/index.html">Intuitivo - Formations sur Python et Django </a></h1>
                 <nav><ul>
-                    <li class="active"><a href="http://intuitivo.fr/category/formations.html">Formations</a></li>
+                <li><a href="http://intuitivo.fr/index.html">Accueil</a></li>
+                <li><a href="http://intuitivo.fr/archives.html">Archives</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+
 <section id="content" class="body">
-  <article>
-    <header>
-      <h1 class="entry-title">
-        <a href="http://intuitivo.fr/formation-django-avance.html" rel="bookmark"
-           title="Permalink to Formation Django avancé">Formation Django avancé</a></h1>
-    </header>
-
-    <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-11-08T14:47:00+01:00">
-                Published: Wed 08 November 2017
-        </abbr>
-		<br />
-        <abbr class="modified" title="2017-11-08T14:50:00+01:00">
-                Updated: Wed 08 November 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://intuitivo.fr/author/sylvain-josserand.html">Sylvain Josserand</a>
-        </address>
-<p>In <a href="http://intuitivo.fr/category/formations.html">Formations</a>.</p>
-<p>tags: <a href="http://intuitivo.fr/tag/formation.html">formation</a> <a href="http://intuitivo.fr/tag/django.html">django</a> <a href="http://intuitivo.fr/tag/avance.html">avancé</a> </p>
-</footer><!-- /.post-info -->      
+<article>
+        <header> <h1 class="entry-title"><a href="formation-django-avance.html"
+        rel="bookmark" title="Permalink to Formation Django avancé">Formation Django avancé</a></h1>  </header>
+        <div class="entry-content">
+        <footer class="post-info">
+                <abbr class="published" title="2017-11-08T14:47:00+01:00">
+                    Publié le Wednesday 08 November 2017 &agrave; 14:47
+                </abbr>
+                <address class="vcard author">
+                        Par <a class="url fn" href="#">Sylvain Josserand</a>
+                </address>
+                <p>Dans <a href="http://intuitivo.fr/category/formations.html">Formations</a>.
+<p>tags: <a href="http://intuitivo.fr/tag/formation.html">formation</a><a href="http://intuitivo.fr/tag/django.html">django</a><a href="http://intuitivo.fr/tag/avance.html">avancé</a></p></p>        </footer><!-- /.post-info -->
+        
 <h2>Objectifs</h2>
 <p>Cette formation a pour but d'approfondir votre compréhension du framework Django.</p>
 <p>Elle est prévue sur 3 jours.</p>
@@ -53,54 +54,122 @@
 <h2>Plan</h2>
 <h3>Jour 1</h3>
 <ul>
-    <li>Les modèles de données</li>
-    <ul>
-        <li>Réviser les bases: Models, Fields et Managers</li>
-        <li>Hériter d'un modèle</li>
-        <li>Créer un Field personnalisé</li>
-        <li>Créer un Manager personnalisé</li>
-        <li>Mise en pratique: DatedModel, CurrencyField et active_objects</li>
-    </ul>
-    <li>Les vues sous forme de classes (class-based views)</li>
-    <ul>
-        <li></li>
-    </ul>
+    <li>Les modèles de données
+        <ul>
+            <li>Révision des bases: Models, Fields et Managers</li>
+            <li>Héritage de modèles</li>
+            <li>Création d'un Field personnalisé</li>
+            <li>Création d'un Manager personnalisé</li>
+            <li>Mise en pratique: DatedModel, CurrencyField et active_objects</li>
+        </ul>
+    </li>
+    <li>Requêtes avancées
+        <ul>
+            <li>Aggregate: avantages et limites</li>
+            <li>Utilisation avancée de prefetch_related et select_related</li>
+            <li>Mise en pratique: Réduction du nombre de requêtes</li>
+        </ul>
+    </li>
+    <li>Les vues
+        <ul>
+            <li>Révision des bases: Vues sous forme de clases (class-based views)</li>
+            <li>Vues génériques: TemplateView, ListView, ...</li>
+            <li>Mise en pratique: Création d'une vue répondant à la méthode HEAD</li>
+        </ul>
+    </li>
+    <li>Les templates
+        <ul>
+            <li>Révision des bases: Filters et Tags</li>
+            <li>Filters personnalisés</li>
+            <li>Tags personnalisés</li>
+            <li>Mise en pratique: Création d'un filtre personalisé</li>
+        </ul>
+    </li>
 </ul>
-Nginx pour remplacer Apache
+<h3>Jour 2</h3>
+<ul>
+    <li>Tests unitaires
+        <ul>
+            <li>Écrire des tests sous Django</li>
+            <li>Serveur de test Live</li>
+            <li>Patching et Mocking</li>
+            <li>Mise en pratique: écrire les tests unitaires de notre application exemple</li>
+        </ul>
+    </li>
+    <li>Sécurité avancée
+        <ul>
+            <li>Révision des bases: protection contre le XSS (csrf token)</li>
+            <li>Authentification par OAuth</li>
+            <li>Mise en pratique: se connecter à notre application exemple par OAuth</li>
+        </ul>
+    </li>
+    <li>Migrations de données
+        <ul>
+            <li>Fusion de migrations</li>
+            <li>Migration de données: Python et SQL</li>
+            <li>Mise en pratique: créer une merge migration</li>
+        </ul>
+    </li>
+</ul>
+<h3>Jour 3</h3>
+<ul>
+    <li>Django Rest Framework
+        <ul>
+            <li>Les ViewSets</li>
+            <li>Les Serializers</li>
+            <li>Mise en pratique: Ajouter une API auto-documentée à notre application</li>
+        </ul>
+    </li>
+    <li>Performance
+        <ul>
+            <li>Django Debug Toolbar</li>
+            <li>Gestion du cache</li>
+            <li>Mise en pratique: améliorer les performances de notre application</li>
+        </ul>
+    </li>
+</ul>
+
 <h2>Support de cours</h2>
 <a href="/supports/django_avancé">Support de cours pour la formation Django avancé</a>
 
-    </div><!-- /.entry-content -->
+        </div><!-- /.entry-content -->
 
-  </article>
+</article>
 </section>
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>links</h2>
+
+        <aside id="sidebar">
+                <div class="widget">
+                        <h2>Catégories</h2>
+                        <ul>
+                           <li class="active"><a href="http://intuitivo.fr/category/formations.html">Formations</a></li>
+                        </ul>
+                </div>
+                <div class="widget blogroll">
+                        <h2>Liens</h2>
                         <ul>
                             <li><a href="https://getpelican.com/">Pelican</a></li>
                             <li><a href="https://python.org/">Python.org</a></li>
                             <li><a href="https://www.djangoproject.com/">Django</a></li>
                         </ul>
                 </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
+                <div class="widget social">
+                        <h2>Réseaux sociaux</h2>
                         <ul>
-                            <li><a href="http://intuitivo.fr/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="http://intuitivo.fr/" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://sylvain-josserand.fr">Mon CV sur DoYouBuzz</a></li>
                             <li><a href="https://www.twitter.com/SylvainJoss">Twitter</a></li>
                         </ul>
                 </div><!-- /.social -->
-        </section><!-- /#extras -->
+        </aside><!-- /#sidebar -->
 
-        <footer id="contentinfo" class="body">
+        <footer id="footer" class="body">
                 <address id="about" class="vcard body">
-                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                Ce site est généré par <a href="http://alexis.notmyidea.org/pelican/">Pelican</a>, un CMS réalisé en <a href="http://python.org">Python</a>.
                 </address><!-- /#about -->
 
-                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        </footer><!-- /#contentinfo -->
+                <p>Le thème utilisé est «NotMyIdea-CMS», une version modifiée de «NotMyIdea», le thème par défaut.</p>
+        </footer><!-- /#footer -->
 
 </body>
 </html>
