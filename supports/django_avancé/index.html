@@ -1,49 +1,206 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Support de formation sur Django avancé</title>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=1024, user-scalable=no">
+    <title>Support de formation sur Django avancé</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=1024, user-scalable=no">
 
-  <!-- Required stylesheet -->
-  <link rel="stylesheet" media="screen" href="core/deck.core.css">
+    <!-- Required stylesheet -->
+    <link rel="stylesheet" media="screen" href="core/deck.core.css">
 
-  <!-- Extension CSS files go here. Remove or add as needed. -->
-  <link rel="stylesheet" media="screen" href="extensions/goto/deck.goto.css">
-  <link rel="stylesheet" media="screen" href="extensions/menu/deck.menu.css">
-  <link rel="stylesheet" media="screen" href="extensions/navigation/deck.navigation.css">
-  <link rel="stylesheet" media="screen" href="extensions/status/deck.status.css">
-  <link rel="stylesheet" media="screen" href="extensions/scale/deck.scale.css">
+    <!-- Extension CSS files go here. Remove or add as needed. -->
+    <link rel="stylesheet" media="screen" href="extensions/goto/deck.goto.css">
+    <link rel="stylesheet" media="screen" href="extensions/menu/deck.menu.css">
+    <link rel="stylesheet" media="screen" href="extensions/navigation/deck.navigation.css">
+    <link rel="stylesheet" media="screen" href="extensions/status/deck.status.css">
+    <link rel="stylesheet" media="screen" href="extensions/scale/deck.scale.css">
 
-  <!-- Style theme. More available in /themes/style/ or create your own. -->
-  <link rel="stylesheet" media="screen" href="themes/style/web-2.0.css">
+    <!-- Style theme. More available in /themes/style/ or create your own. -->
+    <link rel="stylesheet" media="screen" href="themes/style/swiss.css">
 
-  <!-- Transition theme. More available in /themes/transition/ or create your own. -->
-  <link rel="stylesheet" media="screen" href="themes/transition/horizontal-slide.css">
+    <!-- Transition theme. More available in /themes/transition/ or create your own. -->
+    <link rel="stylesheet" media="screen" href="themes/transition/fade.css">
+    <!-- Basic black and white print styles -->
+    <link rel="stylesheet" media="print" href="core/print.css">
 
-  <!-- Basic black and white print styles -->
-  <link rel="stylesheet" media="print" href="core/print.css">
-
-  <!-- Required Modernizr file -->
-  <script src="modernizr.custom.js"></script>
+    <!-- Required Modernizr file -->
+    <script src="modernizr.custom.js"></script>
 </head>
 <body>
-  <div class="deck-container">
+<div class="deck-container">
 
     <!-- Begin slides. Just make elements with a class of slide. -->
+    <div class="slide">
+        <h2>Bienvenue!</h2>
+        <ul>
+            <li>Les présentations</li>
+            <br>
+            <li>Logistique de la formation</li>
+            <br>
+            <li>Attentes</li>
+            <br>
+            <li>Installation de Python 3.5, PyCharm et Django 1.11</li>
+        </ul>
+    </div>
+    <div class="slide">
+        <h2>Ressources</h2>
+        <ul>
+            <li>Documentation de Django: <a href="https://docs.djangoproject.com/fr/1.11/">https://docs.djangoproject.com/fr/1.11/</a></li>
+            <br>
+            <li>Django Snippets: <a href="https://djangosnippets.org/">https://djangosnippets.org/</a></li>
+            <br>
+            <li>Django Rest Framework: <a href="http://www.django-rest-framework.org/">http://www.django-rest-framework.org/</a></li>
+        </ul>
+        <blockquote>
+            <p>Read the Source, Luke</p>
+            <p><cite>Yoda</cite></p>
+        </blockquote>
+    </div>
+    <div class="slide">
+        <h2>Les modèles</h2>
+        <blockquote>Lorsque vous concevez des applications complexes, centralisez (autant que possible)
+            la logique "métier" dans les <b>modèles</b> et leurs <b>méthodes<b>
+        </blockquote>
+    </div>
+    <div class="slide">
+        <h2>Révisions rapides</h2>
+        <ul>
+            <li>Models</li>
+            <br>
+            <li>Fields</li>
+            <br>
+            <li>Managers</li>
+        </ul>
+    </div>
+    <div class="slide">
+        <h2>Héritage de modèles</h2>
+        <ul>
+            <li>abstract</li>
+            <br>
+            <li>Héritage multiple</li>
+            <br>
+            <li>proxy (modèles mandataires)</li>
+            <br>
+            <li>Imports circulaires</li>
+        </ul>
+    </div>
+    <div class="slide">
+        <h2>abstract</h2>
+        <p>👍 Ajouter des champs générique pour tous vos modèles</p>
+        <p>👎 Colonnes supplémentaires (pas optimal si données souvent vides)</p>
+        <p>👎 Pas d'héritage multiple avec abstract</p>
+        <pre>
+class DatedModel(Model):
+    class Meta:
+        abstract = True
+    created = DateTimeField(auto_now_add=True)
+    modified = DateTimeField(auto_now=True)
 
-    <section class="slide">
-      <h1>Slide</h1>
-    </section>
+class Company(DatedModel):
+    name = TextField()
+date = DatedModel()  # Objection!
+fedex = Company(name="Fedex")
+fedex.created
+        </pre>
+    </div>
+    <div class="slide">
+        <h2>Héritage multiple</h2>
+        <p>Création d'un OneToOneField automatique vers le parent et l'enfant si il existe</p>
+        <pre>
+class Vehicle(DatedModel):
+    color = CharField()
 
-    <section class="slide">
-      <h1>Content</h1>
-    </section>
-
-    <section class="slide">
-      <h1>Here</h1>
-    </section>
+class Truck(Vehicle):
+    owner = ForeignKey(Company)
+        </pre>
+    </div>
+    <div class="slide">
+        <h2>Héritage multiple</h2>
+        <p>Tous les champs de Vehicle seront aussi disponible dans Truck, même si les données se trouveront dans des <b>tables différentes</b></p>
+        <p>👍 Possibilité d'hériter de plusieurs classes, modèles de base (Vehicle) non-modifié et accessible</p>
+        <p>👍 Pratique pour étendre en conservant l'existant</p>
+        <p>👎 Jointures ou requêtes supplémentaires</p>
+        <p>👎 Peut complexifier le code (vérification d'existance de sous-objets)</p>
+        <pre>
+mon_camion = Truck(color='red', owner=fedex)
+mon_camion.color
+mon_camion.vehicle
+mon_camion.save()  # Pour obtenir l'ID
+mon_vehicule = Vehicle.objects.get(pk=mon_camion.id)
+assert mon_vehicule.truck == mon_camion
+        </pre>
+    </div>
+    <div class="slide">
+        <h2>proxy (modèles mandataires)</h2>
+        <a href="https://docs.djangoproject.com/fr/1.11/topics/db/models/#proxy-models">Doc Django</a>
+        <p>Permet de modifier le comportement d'un modèle sans changer la façon dont il stocke ses données</p>
+        <pre>
+class Car(Vehicle):
+    class Meta:
+        proxy = True
+    def __str__(self):
+        return "{} car".format(self.color)
+    def paint(self, color):
+        self.color = color
+        </pre>
+    </div>
+    <div class="slide">
+        <h2>Imports circulaires</h2>
+        <p>Si vous rencontrez le message d'erreur "Cannot import &lt;module&gt;", il peut s'agir d'un problème d'import circulaire</p>
+        <p>La solution consiste à importer le module dans la méthode où il est utilisée, plutôt qu'à la racine, en haut du fichier</p>
+        <p>Pour les clefs étrangères, plutôt que la classe elle-même, utilisez une chaîne contenant son nom</p>
+        <pre>
+class Truck(Vehicle):
+    owner = ForeignKey(Company)
+        </pre>
+        <p>Devient:</p>
+        <pre>
+class Truck(Vehicle):
+    owner = ForeignKey("Company")
+        </pre>
+    </div>
+    <div class="slide"><h2>Création d'un Field personnalisé</h2></div>
+    <div class="slide"><h2>Création d'un Manager personnalisé</h2></div>
+    <div class="slide"><h2>Mise en pratique: DatedModel, CurrencyField et active_objects</h2></div>
+    <div class="slide"><h2>Requêtes avancées</h2></div>
+    <div class="slide"><h2>Aggregate: avantages et limites</h2></div>
+    <div class="slide"><h2>Utilisation avancée de prefetch_related et select_related</h2></div>
+    <div class="slide"><h2>Mise en pratique: Réduction du nombre de requêtes</h2></div>
+    <div class="slide"><h2>Les vues</h2></div>
+    <div class="slide"><h2>Révision des bases: Les vues sous forme de clases (class-based views)</h2></div>
+    <div class="slide"><h2>Vues génériques: TemplateView, ListView, ...</h2></div>
+    <div class="slide"><h2>Les Mixin</h2></div>
+    <div class="slide"><h2>Les middleware</h2></div>
+    <div class="slide"><h2>Mise en pratique: Création d'un mixin de vue générique et d'un middleware</h2></div>
+    <div class="slide"><h2>Les templates</h2></div>
+    <div class="slide"><h2>Révision des bases: Filters et Tags</h2></div>
+    <div class="slide"><h2>Filters personnalisés</h2></div>
+    <div class="slide"><h2>Tags personnalisés</h2></div>
+    <div class="slide"><h2>Mise en pratique: Création d'un filtre personalisé</h2></div>
+    <div class="slide"><h2>Tests unitaires</h2></div>
+    <div class="slide"><h2>Écrire des tests sous Django</h2></div>
+    <div class="slide"><h2>Serveur de test Live</h2></div>
+    <div class="slide"><h2>Patching et Mocking</h2></div>
+    <div class="slide"><h2>Mise en pratique: Écrire les tests unitaires de notre application exemple</h2></div>
+    <div class="slide"><h2>Sécurité avancée</h2></div>
+    <div class="slide"><h2>Révision des bases: protection contre le XSS (csrf token)</h2></div>
+    <div class="slide"><h2>Customisation de l'authentification: JWT et clef d'API</h2></div>
+    <div class="slide"><h2>Authentification par OAuth</h2></div>
+    <div class="slide"><h2>Mise en pratique: Gérer la séparation des données dans notre application</h2></div>
+    <div class="slide"><h2>Migrations de données</h2></div>
+    <div class="slide"><h2>Migration de données: Python et SQL</h2></div>
+    <div class="slide"><h2>Fusion de migrations</h2></div>
+    <div class="slide"><h2>Mise en pratique: Créer une migration de données personnalisée</h2></div>
+    <div class="slide"><h2>Django Rest Framework</h2></div>
+    <div class="slide"><h2>Les ViewSets</h2></div>
+    <div class="slide"><h2>Les Serializers</h2></div>
+    <div class="slide"><h2>Mise en pratique: Ajouter une API auto-documentée à notre application</h2></div>
+    <div class="slide"><h2>Performance</h2></div>
+    <div class="slide"><h2>Django Debug Toolbar</h2></div>
+    <div class="slide"><h2>Gestion du cache</h2></div>
+    <div class="slide"><h2>Mise en pratique: améliorer les performances de notre application</h2></div>
+    <div class="slide"><h2>Gardons contact</h2><p><a href="mailto:sylvain@intuitivo.fr">sylvain@intuitivo.fr</a></p><p><a href="http://intuitivo.fr">intuitivo.fr</a></p></div>
 
     <!-- End slides. -->
 
@@ -51,27 +208,27 @@
 
     <!-- deck.navigation snippet -->
     <div aria-role="navigation">
-      <a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
-      <a href="#" class="deck-next-link" title="Next">&#8594;</a>
+        <a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
+        <a href="#" class="deck-next-link" title="Next">&#8594;</a>
     </div>
 
     <!-- deck.status snippet -->
     <p class="deck-status" aria-role="status">
-      <span class="deck-status-current"></span>
-      /
-      <span class="deck-status-total"></span>
+        <span class="deck-status-current"></span>
+        /
+        <span class="deck-status-total"></span>
     </p>
 
     <!-- deck.goto snippet -->
     <form action="." method="get" class="goto-form">
-      <label for="goto-slide">Go to slide:</label>
-      <input type="text" name="slidenum" id="goto-slide" list="goto-datalist">
-      <datalist id="goto-datalist"></datalist>
-      <input type="submit" value="Go">
+        <label for="goto-slide">Go to slide:</label>
+        <input type="text" name="slidenum" id="goto-slide" list="goto-datalist">
+        <datalist id="goto-datalist"></datalist>
+        <input type="submit" value="Go">
     </form>
 
     <!-- End extension snippets. -->
-  </div>
+</div>
 
 <!-- Required JS files. -->
 <script src="jquery.min.js"></script>
@@ -86,9 +243,9 @@
 
 <!-- Initialize the deck. You can put this in an external file if desired. -->
 <script>
-  $(function() {
-    $.deck('.slide');
-  });
+    $(function () {
+        $.deck('.slide');
+    });
 </script>
 </body>
 </html>
