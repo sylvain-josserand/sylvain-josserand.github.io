@@ -105,7 +105,7 @@ fedex.created
         </pre>
     </div>
     <div class="slide">
-        <h2>Héritage multiple</h2>
+        <h2>Héritage multiple (1/2)</h2>
         <p>Création d'un OneToOneField automatique vers le parent et l'enfant si il existe</p>
         <pre>
 class Vehicle(DatedModel):
@@ -116,7 +116,7 @@ class Truck(Vehicle):
         </pre>
     </div>
     <div class="slide">
-        <h2>Héritage multiple</h2>
+        <h2>Héritage multiple (2/2)</h2>
         <p>Tous les champs de Vehicle seront aussi disponible dans Truck, même si les données se trouveront dans des <b>tables différentes</b></p>
         <p>👍 Possibilité d'hériter de plusieurs classes, modèles de base (Vehicle) non-modifié et accessible</p>
         <p>👍 Pratique pour étendre en conservant l'existant</p>
@@ -160,13 +160,203 @@ class Truck(Vehicle):
     owner = ForeignKey("Company")
         </pre>
     </div>
-    <div class="slide"><h2>Création d'un Field personnalisé</h2></div>
-    <div class="slide"><h2>Création d'un Manager personnalisé</h2></div>
-    <div class="slide"><h2>Mise en pratique: DatedModel, CurrencyField et active_objects</h2></div>
-    <div class="slide"><h2>Requêtes avancées</h2></div>
-    <div class="slide"><h2>Aggregate: avantages et limites</h2></div>
-    <div class="slide"><h2>Utilisation avancée de prefetch_related et select_related</h2></div>
-    <div class="slide"><h2>Mise en pratique: Réduction du nombre de requêtes</h2></div>
+    <div class="slide">
+        <h2>Création d'un champ personnalisé (1/2)</h2>
+        <p>👍 Les champs personnalisés permettent de stocker des données arbitraires tout en contrôlant la façon dont on les enregistre</p>
+        <p>👍 Peut engendrer des gains de performance spectaculaires dans ceraines circonstances</p>
+        <p>👎 Attention aux implémentations qui dépendent du moteur de base de données</p>
+        <p>👎 Dé-corrélation avec les données physiquement présentes dans la base</p>
+        <p>👎 Peut engendrer une certaine complexité: un niveau d'abstraction en plus (en trop?)</p>
+    </div>
+    <div class="slide">
+        <h2>Création d'un champ personnalisé (2/2)</h2>
+        <p>
+        <pre>
+class CharMaxlength25Field(models.Field):
+    def db_type(self, connection):
+        return 'char(25)'  # Type spécifique à Postgresql
+
+class BetterCharField(models.Field):
+    def __init__(self, max_length, *args, **kwargs):
+        self.max_length = max_length
+        super(BetterCharField, self).__init__(*args, **kwargs)
+
+    def db_type(self, connection):
+        return 'char(%s)' % self.max_length  # Version paramétrique
+        </pre>
+        </p>
+    </div>
+    <div class="slide">
+        <h2>Création d'un Manager personnalisé (1/2)</h2>
+        <p>Chaque modèle possède un manager par défaut, il s'agit de l'attribut <i>objects</i></p>
+        <p>Un manager personnalisé permet de limiter (ou d'enrichir) le queryset lié à un modèle</p>
+        <p>Au lieu de requêter sur l'ensemble des objets comme on le fait sur <i>objects</i>, on se limite à un sous-ensemble</p>
+        <p>👍 Améliore la qualité du code, c'est à dire sa facilité de compréhension et sa maintenabilité</p>
+        <p>👎 Il faut se rappeler de l'utiliser 😅</p>
+    </div>
+    <div class="slide">
+        <h2>Création d'un Manager personnalisé (2/2)</h2>
+        <p>Par exemple, un manager personnalisé peut être utilisé pour cacher des objets au lieu de les supprimer</p>
+        <p>Cela permet d'ajouter une corbeille dans votre application, ou une fonction d'annulation de suppression</p>
+        <pre>
+            class ActiveUserManager(models.Manager):
+                def get_queryset(self):
+                    return super(UserManager, self).get_queryset().filter(active=True)
+
+            class User(models.Model):
+                active = BooleanField(default=True)
+                active_objects = ActiveManager()
+        </pre>
+    </div>
+    <div class="slide">
+        <h2>Mise en pratique</h2>
+        <p>
+            <ol>
+                <li>Créez un nouveau projet: application de gestion de finances personnelles</li>
+                <li>Créer un modèle Expense</li>
+                <li>Ce modèle doit stocker les données de façon efficiente et utiliser les éléments suivants:</li>
+                <ul>
+                    <li>Hériter d'un modèle abstrait: DatedModel</li>
+                    <li>Posséder un champ personnalisé: MoneyField qui stocke les somme d'argent sous forme d'entiers dans la base (avec les centimes)</li>
+                    <li>Utiliser un Manager personnalisé: active_objects</li>
+                </ul>
+            </ol>
+        </p>
+    </div>
+    <div class="slide">
+        <h2>Tests unitaires</h2>
+        <blockquote>
+            Les tests unitaires permettent de limiter les bugs induits et donc vous donnent confiance dans la robustesse de votre application
+        </blockquote>
+    </div>
+    <div class="slide">
+        <h2>Écrire des tests sous Django</h2>
+        <p>
+            Plusieurs classes existent pour réaliser des tests unitaires sous Django:
+            <ul>
+                <li>django.test.TestCase</li>
+                <ul>
+                    <li>django.test.TransactionTestCase</li>
+                    <ul>
+                        <li>django.test.LiveServerTestCase: Lance un vrai serveur Django ce qui permet de tester l'interface avec Selenium ou PhantomJS</li>
+                        <li>django.test.StaticLiveServerTestCase: Idem + fichiers statiques sans avoir besoin de lancer collectstatic</li>
+                    </ul>
+                </ul>
+            </ul>
+        </p>
+    </div>
+    <div class="slide">
+        <h2>Patching et Mocking</h2>
+        <p>
+            <ul>
+                <li>unittest.mock</li>
+                <li>unittest.patch</li>
+            </ul>
+        </p>
+    </div>
+    <div class="slide">
+        <h2>Couverture de code (code coverage)</h2>
+        <p>
+            L'outil <i>coverage</i><br>
+            <a href="https://coverage.readthedocs.io/en/coverage-4.4.2/">https://coverage.readthedocs.io/en/coverage-4.4.2/</a>
+            <pre>
+                # pip install coverage
+                coverage run manage.py test
+            </pre>
+        </p>
+        <p>PyCharm Professional intègre un outil de couverture de code</p>
+    </div>
+    <div class="slide">
+        <h2>Mise en pratique</h2>
+        <p>
+            Écrire les tests unitaires de notre application exemple
+        </p>
+        <h3>Bonus</h3>
+        <p>
+            Interfacer notre application avec <a href="http://fixer.io">fixer.io</a> et mocker la requête.
+        </p>
+    </div>
+    <div class="slide">
+        <h2>Requêtes avancées</h2>
+        <blockquote>
+            <p>L'ORM de Django permet de réconcilier le modèle Objet de Python avec le stockage SQL...</p>
+            <p>Au prix d'une multiplication des requêtes, qui peut ralentir considérablement notre application</p>
+            <p>Nous allons voir comment mitiger ce problème</p>
+        </blockquote>
+    </div>
+    <div class="slide">
+        <h2>Annotate: avantages et limites</h2>
+        <p>Annotate permet l'équivalent d'un <i>group by</i> en SQL</p>
+        <p>Compter le nombre de dépenses par utilisateur:</p>
+        <pre>
+from django.db.models import Count
+user = User.objects.all().annotate(Count('expense_set'))[0]
+user.expense_set__count
+        </pre>
+        <p>Compter le total par utilisateur:</p>
+        <pre>
+from django.db.models import Sum
+user = User.objects.all().annotate(total=Sum('expense_set__amount'))
+user.total
+        </pre>
+        <p>Une seule requête à chaque fois!</p>
+    </div>
+    <div class="slide">
+        <h2>Aggregate</h2>
+        <p>Aggregate permet d'aggréger des données en une seule par somme ou comptage</p>
+        <pre>
+from django.db.models import Sum
+User.objects.all().aggregate(grand_total=Sum('expense_set__amount'))
+        </pre>
+    </div>
+    <div class="slide">
+        <h2>Utilisation avancée de select_related et prefetch_related</h2>
+        <h3>select_related</h3>
+        <p>
+            <i>select_related</i> permet d'économiser une requête lorsqu'on accède à un objet lié à un autre par une clef étrangère
+            <pre>
+expense = Expense.objects.get(pk=1)  # 1 requête
+expense.user  # 1 requête
+
+expense = Expense.objects.select_related('user').get(pk=1)  # 1 requête
+expense.user  # Pas de requête!
+            </pre>
+        </p>
+    </div>
+    <div class="slide">
+        <h2>Utilisation avancée de select_related et prefetch_related</h2>
+        <h3>select_related</h3>
+        <p>
+            <i>select_related</i> permet d'économiser une requête lorsqu'on accède à un objet lié à un autre par une clef étrangère
+        <pre>
+for expense in Expense.objects.all()  # 1 requête
+    expense.user  # 1 requête à chaque fois!
+
+for expense in Expense.objects.select_related('user').get(pk=1)  # 1 requête avec jointure
+    expense.user  # Pas de requête!
+            </pre>
+        </p>
+    </div>
+    <div class="slide">
+        <h2>Utilisation avancée de select_related et prefetch_related</h2>
+        <h3>prefetch_related</h3>
+        <p>
+            <i>prefetch_related</i> permet d'éviter de multiplier les requêtes quand on accède à un OneToMany (ForeignKey inversée)
+            <pre>
+        for user in User.objects.all():  # 1 requête
+            for expense in user.expense_set.all():  # 1 requête par user!
+                print(expense.amount)
+
+        for user in User.objects.prefetch_related('expense_set').all():  # 2 requêtes: 1 pour User + 1 pour Expense
+            for expense in user.expense_set.all():  # Pas de requête!
+                print(expense.amount)
+            </pre>
+        </p>
+    </div>
+    <div class="slide"><h2>Mise en pratique</h2>
+        <p>Réduction du nombre de requêtes</p>
+    </div>
+    <!-- Jour 2 -->
     <div class="slide"><h2>Les vues</h2></div>
     <div class="slide"><h2>Révision des bases: Les vues sous forme de clases (class-based views)</h2></div>
     <div class="slide"><h2>Vues génériques: TemplateView, ListView, ...</h2></div>
@@ -178,16 +368,12 @@ class Truck(Vehicle):
     <div class="slide"><h2>Filters personnalisés</h2></div>
     <div class="slide"><h2>Tags personnalisés</h2></div>
     <div class="slide"><h2>Mise en pratique: Création d'un filtre personalisé</h2></div>
-    <div class="slide"><h2>Tests unitaires</h2></div>
-    <div class="slide"><h2>Écrire des tests sous Django</h2></div>
-    <div class="slide"><h2>Serveur de test Live</h2></div>
-    <div class="slide"><h2>Patching et Mocking</h2></div>
-    <div class="slide"><h2>Mise en pratique: Écrire les tests unitaires de notre application exemple</h2></div>
     <div class="slide"><h2>Sécurité avancée</h2></div>
     <div class="slide"><h2>Révision des bases: protection contre le XSS (csrf token)</h2></div>
     <div class="slide"><h2>Customisation de l'authentification: JWT et clef d'API</h2></div>
     <div class="slide"><h2>Authentification par OAuth</h2></div>
     <div class="slide"><h2>Mise en pratique: Gérer la séparation des données dans notre application</h2></div>
+    <!-- Jour 3 -->
     <div class="slide"><h2>Migrations de données</h2></div>
     <div class="slide"><h2>Migration de données: Python et SQL</h2></div>
     <div class="slide"><h2>Fusion de migrations</h2></div>
