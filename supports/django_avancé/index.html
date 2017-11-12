@@ -424,18 +424,20 @@ for expense in Expense.objects.select_related('user').get(pk=1)  # 1 requête av
         <h2>Les middlewares (2/2)</h2>
         <p>Voilà la liste des middlewares utilisés par défaut en v1.11:</p>
         <ul>
-            <li>django.middleware.security.SecurityMiddleware</li>,
-            <li>django.contrib.sessions.middleware.SessionMiddleware</li>,
-            <li>django.middleware.common.CommonMiddleware</li>,
-            <li>django.middleware.csrf.CsrfViewMiddleware</li>,
-            <li>django.contrib.auth.middleware.AuthenticationMiddleware</li>,
-            <li>django.contrib.messages.middleware.MessageMiddleware</li>,
-            <li>django.middleware.clickjacking.XFrameOptionsMiddleware</li>,
+            <li>django.middleware.security.SecurityMiddleware</li>
+            <li>django.contrib.sessions.middleware.SessionMiddleware</li>
+            <li>django.middleware.common.CommonMiddleware</li>
+            <li>django.middleware.csrf.CsrfViewMiddleware</li>
+            <li>django.contrib.auth.middleware.AuthenticationMiddleware</li>
+            <li>django.contrib.messages.middleware.MessageMiddleware</li>
+            <li>django.middleware.clickjacking.XFrameOptionsMiddleware</li>
         </ul>
         <p>La sécurité est un concept global, un seul oubli et votre application n'est plus sûre.</p>
         <p>Les middleware sont donc particulièrement bien adaptés pour assurer la sécurité de votre application.</p>
     </div>
-    <div class="slide"><h2>Mise en pratique: Création d'un mixin de vue générique et d'un middleware</h2></div>
+    <div class="slide"><h2>Mise en pratique</h2>
+        <h3>Création d'un mixin de vue générique et d'un middleware</h3>
+    </div>
     <div class="slide">
         <h2>Les templates</h2>
         <blockquote>Les templates génèrent le code HTML. Evitez (autant que possible) d'y placer la moindre logique (a fortiori la logique "métier").</blockquote>
@@ -456,7 +458,8 @@ for expense in Expense.objects.select_related('user').get(pk=1)  # 1 requête av
     </div>
     <div class="slide">
         <h2>Tags personnalisés</h2>
-        <p>Les tags sont utiles (mais rarement) pour injecter une logique personnalisée dans le template lorsque qu'on ne peut pas faire autrement</p>
+        <p>Les tags personnalisés sont utiles pour injecter une logique personnalisée dans le template lorsque qu'on ne peut pas faire autrement.</p>
+        <p>À utiliser avec parcimonie.</p>
     </div>
     <div class="slide">
         <h2>Mise en pratique: Création d'un filtre personalisé</h2>
@@ -465,9 +468,9 @@ for expense in Expense.objects.select_related('user').get(pk=1)  # 1 requête av
         <h2>Sécurité avancée</h2>
         <p>
             <blockquote>
-            Django possède un arsenal de protections qui sont activées par défaut.
-            Il est néanmoins indispensable d'en connaître le fonctionnement et les limites.
-            D'autre part, c'est vous qui êtes responsables de la séparation des données.
+                <p>Django possède un arsenal de protections contre les attaques courantes. Ces protections sont activées par défaut.</p>
+                <p>Il est néanmoins indispensable d'en connaître le fonctionnement et les limites.</p>
+                <p>D'autre part, c'est <u>vous</u> qui êtes responsables de l'accès aux données et leur cloisonnement par utilisateur.</p>
             </blockquote>
         </p>
     </div>
@@ -529,7 +532,8 @@ qui servira à fusionner (merge) ces deux migrations "filles".</p>
             vers le format cible qui est en général le JSON, parfois le XML.</p>
     </div>
     <div class="slide">
-        <h2>Mise en pratique: Ajouter une API auto-documentée à notre application</h2>
+        <h2>Mise en pratique</h2>
+        <h3>Ajouter une API auto-documentée à notre application</h3>
     </div>
     <div class="slide">
         <h2>Performance</h2>
@@ -540,6 +544,7 @@ qui servira à fusionner (merge) ces deux migrations "filles".</p>
                 <li>Make it fast</li>
             </ol>
         </blockquote>
+    </div>
     <div class="slide">
         <h2>Profiling</h2>
         <p>À partir d'un certain niveau de complexité, il est impossible d'appréhender de visu les "points chauds" d'un programme</p>
@@ -570,7 +575,8 @@ qui servira à fusionner (merge) ces deux migrations "filles".</p>
         </p>
     </div>
     <div class="slide">
-        <h2>Mise en pratique: améliorer les performances de notre application</h2>
+        <h2>Mise en pratique</h2>
+        <h3>Améliorer les performances de notre application</h3>
     </div>
     <div class="slide">
         <h2>Gardons contact</h2>
