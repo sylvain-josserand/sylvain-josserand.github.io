@@ -357,36 +357,234 @@ for expense in Expense.objects.select_related('user').get(pk=1)  # 1 requête av
         <p>Réduction du nombre de requêtes</p>
     </div>
     <!-- Jour 2 -->
-    <div class="slide"><h2>Les vues</h2></div>
-    <div class="slide"><h2>Révision des bases: Les vues sous forme de clases (class-based views)</h2></div>
-    <div class="slide"><h2>Vues génériques: TemplateView, ListView, ...</h2></div>
-    <div class="slide"><h2>Les Mixin</h2></div>
-    <div class="slide"><h2>Les middleware</h2></div>
+    <div class="slide">
+        <h2>Les vues</h2>
+        <blockquote>
+            Les vues sont l'adaptateur entre les modèles et l'affichage.
+            Elles permettent de mettre les données au format souhaité en sortie afin que ces dernières soient exploitables
+        </blockquote>
+    </div>
+    <div class="slide"><h2>Révisions</h2>
+        <p>Les vues sous forme de clases (class-based views)</p>
+    </div>
+    <div class="slide">
+        <h2>Vues génériques</h2>
+        <p>
+            <ul>
+                <li>TemplateView</li>
+                <ul>
+                    <li>ListView</li>
+                    <li>DetailView</li>
+                </ul>
+            </ul>
+        </p>
+    </div>
+    <div class="slide">
+        <h2>Les Mixins (1/2)</h2>
+        <h3>Mixins simples</h3>
+        <p>
+            <ul>
+                <li>django.views.generic.base.<b>ContextMixin</b></li>
+                <li>django.views.generic.base.<b>TemplateResponseMixin</b></li>
+            </ul>
+        </p>
+
+        <h3>Mixins mono-objets</h3>
+        <p>
+            <ul>
+                <li>django.views.generic.detail.<b>SingleObjectMixin</b></li>
+                <li>django.views.generic.detail.<b>SingleObjectTemplateResponseMixin</b></li>
+            </ul>
+        </p>
+
+        <h3>Mixins multi-objets</h3>
+        <p>
+        <ul>
+            <li>django.views.generic.list.<b>MultipleObjectMixin</b></li>
+            <li>django.views.generic.list.<b>MultipleObjectTemplateResponseMixin</b></li>
+        </ul>
+        </p>
+    </div>
+    <div class="slide">
+        <h2>Les Mixins (1/2)</h2>
+        <h3>Mixins d'édition</h3>
+        <ul>
+            <li>django.views.generic.edit.<b>FormMixin</b></li>
+            <li>django.views.generic.edit.<b>ModelFormMixin</b></li>
+            <li>django.views.generic.edit.<b>ProcessFormView</b></li>
+            <li>django.views.generic.edit.<b>DeletionMixin</b></li>
+        </ul>
+    </div>
+    <div class="slide">
+        <h2>Les middlewares (1/2)</h2>
+        <p>Le middleware, comme son nom l'indique ("le truc au milieu") se situe entre l'arrivée d'une requête et son traitement par la vue.</p>
+        <blockquote>Un middleware permet d'altérer très simplement le comportement global de Django</blockquote>
+    </div>
+    <div class="slide">
+        <h2>Les middlewares (2/2)</h2>
+        <p>Voilà la liste des middlewares utilisés par défaut en v1.11:</p>
+        <ul>
+            <li>django.middleware.security.SecurityMiddleware</li>,
+            <li>django.contrib.sessions.middleware.SessionMiddleware</li>,
+            <li>django.middleware.common.CommonMiddleware</li>,
+            <li>django.middleware.csrf.CsrfViewMiddleware</li>,
+            <li>django.contrib.auth.middleware.AuthenticationMiddleware</li>,
+            <li>django.contrib.messages.middleware.MessageMiddleware</li>,
+            <li>django.middleware.clickjacking.XFrameOptionsMiddleware</li>,
+        </ul>
+        <p>La sécurité est un concept global, un seul oubli et votre application n'est plus sûre.</p>
+        <p>Les middleware sont donc particulièrement bien adaptés pour assurer la sécurité de votre application.</p>
+    </div>
     <div class="slide"><h2>Mise en pratique: Création d'un mixin de vue générique et d'un middleware</h2></div>
-    <div class="slide"><h2>Les templates</h2></div>
-    <div class="slide"><h2>Révision des bases: Filters et Tags</h2></div>
-    <div class="slide"><h2>Filters personnalisés</h2></div>
-    <div class="slide"><h2>Tags personnalisés</h2></div>
-    <div class="slide"><h2>Mise en pratique: Création d'un filtre personalisé</h2></div>
-    <div class="slide"><h2>Sécurité avancée</h2></div>
-    <div class="slide"><h2>Révision des bases: protection contre le XSS (csrf token)</h2></div>
-    <div class="slide"><h2>Customisation de l'authentification: JWT et clef d'API</h2></div>
-    <div class="slide"><h2>Authentification par OAuth</h2></div>
-    <div class="slide"><h2>Mise en pratique: Gérer la séparation des données dans notre application</h2></div>
+    <div class="slide">
+        <h2>Les templates</h2>
+        <blockquote>Les templates génèrent le code HTML. Evitez (autant que possible) d'y placer la moindre logique (a fortiori la logique "métier").</blockquote>
+    </div>
+    <div class="slide">
+        <h2>Révisions</h2>
+        <h3>Filters</h3>
+        <p>{{ expense.name|title }}</p>
+        <p>{{ expense.name|title|safe }}</p>
+        <h3>Tags</h3>
+        <p>{% block %}</p>
+        <p>{% include %}</p>
+        <p>{% render expense_form %}</p>
+    </div>
+    <div class="slide">
+        <h2>Filters personnalisés</h2>
+        <p>Les filtres permettent de modifier le format d'affichage d'un élément de façon générique</p>
+    </div>
+    <div class="slide">
+        <h2>Tags personnalisés</h2>
+        <p>Les tags sont utiles (mais rarement) pour injecter une logique personnalisée dans le template lorsque qu'on ne peut pas faire autrement</p>
+    </div>
+    <div class="slide">
+        <h2>Mise en pratique: Création d'un filtre personalisé</h2>
+    </div>
+    <div class="slide">
+        <h2>Sécurité avancée</h2>
+        <p>
+            <blockquote>
+            Django possède un arsenal de protections qui sont activées par défaut.
+            Il est néanmoins indispensable d'en connaître le fonctionnement et les limites.
+            D'autre part, c'est vous qui êtes responsables de la séparation des données.
+            </blockquote>
+        </p>
+    </div>
+    <div class="slide">
+        <h2>Révisions</h2>
+        <h3>Protection contre le CSRF (csrf token)</h3>
+    </div>
+    <div class="slide">
+        <h2>Customisation de l'authentification</h2>
+        <ul>
+            <li>JWT: JSON Web Tokens</li>
+            <li>Clef d'API</li>
+        </ul>
+    </div>
+    <div class="slide">
+        <h2>Authentification par OAuth, SAML</h2>
+    </div>
+    <div class="slide">
+        <h2>Mise en pratique</h2>
+        <p>Sécuriser notre application et séparer les données de chaque utilisateur de façon sécurisée.</p>
+    </div>
     <!-- Jour 3 -->
-    <div class="slide"><h2>Migrations de données</h2></div>
-    <div class="slide"><h2>Migration de données: Python et SQL</h2></div>
-    <div class="slide"><h2>Fusion de migrations</h2></div>
-    <div class="slide"><h2>Mise en pratique: Créer une migration de données personnalisée</h2></div>
-    <div class="slide"><h2>Django Rest Framework</h2></div>
-    <div class="slide"><h2>Les ViewSets</h2></div>
-    <div class="slide"><h2>Les Serializers</h2></div>
-    <div class="slide"><h2>Mise en pratique: Ajouter une API auto-documentée à notre application</h2></div>
-    <div class="slide"><h2>Performance</h2></div>
-    <div class="slide"><h2>Django Debug Toolbar</h2></div>
-    <div class="slide"><h2>Gestion du cache</h2></div>
-    <div class="slide"><h2>Mise en pratique: améliorer les performances de notre application</h2></div>
-    <div class="slide"><h2>Gardons contact</h2><p><a href="mailto:sylvain@intuitivo.fr">sylvain@intuitivo.fr</a></p><p><a href="http://intuitivo.fr">intuitivo.fr</a></p></div>
+    <div class="slide">
+        <h2>Migrations</h2>
+        <blockquote>
+            Les migrations permettent de synchroniser l'état de notre base de données avec l'état de notre code
+        </blockquote>
+    </div>
+    <div class="slide">
+        <h2>Migration de données: Python et SQL</h2>
+        <p>Les migrations de données permettent de réaliser une modification de données de façon <b>répétable</b>.</p>
+    </div>
+    <div class="slide">
+        <h2>Fusion de migrations</h2>
+        <p>Des migrations de schéma peuvent se retrouver sur des branches de versionning séparées et dépendre d'une même migration "mère"</p>
+        <p>Au moment de la fusion des branches (par un git merge, par exemple), ces migrations vont entrer en conflit car
+            l'outil de migration de Django sera incapable de déterminer quelle migration choisir</p>
+        <p>Dans ce cas, si les modifications concernent des tables différentes, il est possible de créer une migration supplémentaire
+qui servira à fusionner (merge) ces deux migrations "filles".</p>
+        <pre>python manage.py makemigrations --merge</pre>
+    </div>
+    <div class="slide">
+        <h2>Mise en pratique</h2>
+        <h3>Créer une migration de données personnalisée</h3>
+    </div>
+    <div class="slide">
+        <h2>Django Rest Framework</h2>
+        <p>DRF est un framework qui enrichit Django pour permettre de concevoir rapidement des API et Web Services.</p>
+    </div>
+    <div class="slide">
+        <h2>Les ViewSets</h2>
+        <p>Le concept de ViewSet permet de concevoir rapidement un ensemble de vues génériques.</p>
+        <p>Les ViewSets redirigent les requêtes suite à leur routage, et les dirigent vers le Serializer approprié.</p>
+    </div>
+    <div class="slide">
+        <h2>Les Serializers</h2>
+        <p>Dans Django Rest Framework, le Serializer remplace en quelque sorte le template HTML</p>
+        <p>Les Serializers définissent la façon dont les objets Django sont convertis depuis et
+            vers le format cible qui est en général le JSON, parfois le XML.</p>
+    </div>
+    <div class="slide">
+        <h2>Mise en pratique: Ajouter une API auto-documentée à notre application</h2>
+    </div>
+    <div class="slide">
+        <h2>Performance</h2>
+        <blockquote>
+            <ol>
+                <li>Make it work</li>
+                <li>Make it right</li>
+                <li>Make it fast</li>
+            </ol>
+        </blockquote>
+    <div class="slide">
+        <h2>Profiling</h2>
+        <p>À partir d'un certain niveau de complexité, il est impossible d'appréhender de visu les "points chauds" d'un programme</p>
+        <p>Pour identifier ces goulets d'étranglement, le profiling est un outil puissant et nécessaire</p>
+        <p><a href="https://docs.python.org/3/library/profile.html">https://docs.python.org/3/library/profile.html</a></p>
+    </div>
+    <div class="slide">
+        <h2>Django Debug Toolbar</h2>
+        <p>Un outil très intéressant permettant d'afficher les requêtes SQL brutes et d'analyser le temps écoulé pour chacune</p>
+    </div>
+    <div class="slide">
+        <h2>Gestion du cache</h2>
+        <p>
+            <a href="https://docs.djangoproject.com/en/1.11/topics/cache/">https://docs.djangoproject.com/en/1.11/topics/cache/</a>
+            Django s'interface par défaut avec les back-ends de cache suivants:
+        </p>
+        <p>
+            <ul>
+                <li>Memcache: Extrêmement rapide, distribué et volatile (limité à la RAM disponible)</li>
+                <li>La base de données: Rapide et persistant. Possibilité de déporter le cache sur une autre base pour éviter de charger la base principale</li>
+                <li>Le système de fichiers: Un peu plus lent, persistant et limité seulement à la capacité du disque</li>
+                <li>Mémoire locale: Rapide, non-persistant et non-distribué</li>
+                <li>"Dummy": Ne cache pas (!), est uniquement utilisé pour tester l'interface de cache</li>
+            </ul>
+        </p>
+        <p>
+            Il est aussi possible de créer son propre backend de cache si les backends par défaut ne conviennent pas à votre besoin
+        </p>
+    </div>
+    <div class="slide">
+        <h2>Mise en pratique: améliorer les performances de notre application</h2>
+    </div>
+    <div class="slide">
+        <h2>Gardons contact</h2>
+        <p>
+            Sylvain Josserand - <a href="mailto:sylvain@intuitivo.fr">sylvain@intuitivo.fr</a></p><p><a href="http://intuitivo.fr">intuitivo.fr</a>
+        </p>
+        <h2>Conditions d'utilisation</h2>
+        <p>
+            L'utilisation de ce support et sa copie <b>dans un but non lucratif</b> est autorisée, à condition de conserver cette diapositive.
+        </p>
+        <p>
+            L'utilisation commerciale de ce support n'est pas autorisée sans mon autorisation préalable. Contactez-moi.
+        </p>
+    </div>
 
     <!-- End slides. -->
 
