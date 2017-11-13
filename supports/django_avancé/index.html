@@ -185,11 +185,18 @@ class BetterCharField(models.Field):
         return 'char(%s)' % self.max_length  # Version paramétrique
 
     def get_prep_value(self, value):
-        return value  # De Python vers la BDD
+        return str(value)[:self.max_length]  # De Python vers la BDD
 
     def to_python(self, value):
-        return value[:self.max_length]  # De la BDD vers Python
+        return str(value)  # De la BDD vers Python
+
+    def value_to_string(self, obj):
+        value = self._get_val_from_obj(obj)
+        return self.get_prep_value(value)
         </pre>
+        <p>
+            <a href="http://cjlarose.com/2014/01/14/django-custom-field-version-number.html">http://cjlarose.com/2014/01/14/django-custom-field-version-number.html</a>
+        </p>
         </p>
     </div>
     <div class="slide">
