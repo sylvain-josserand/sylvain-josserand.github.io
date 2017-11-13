@@ -183,6 +183,12 @@ class BetterCharField(models.Field):
 
     def db_type(self, connection):
         return 'char(%s)' % self.max_length  # Version paramétrique
+
+    def get_prep_value(self, value):
+        return value  # De Python vers la BDD
+
+    def to_python(self, value):
+        return value[:self.max_length]  # De la BDD vers Python
         </pre>
         </p>
     </div>
@@ -204,7 +210,10 @@ class BetterCharField(models.Field):
                     return super(UserManager, self).get_queryset().filter(active=True)
 
             class User(models.Model):
+                # Fields
                 active = BooleanField(default=True)
+
+                # Managers
                 active_objects = ActiveManager()
         </pre>
     </div>
