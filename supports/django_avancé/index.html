@@ -381,16 +381,16 @@ for expense in Expense.objects.select_related('user').get(pk=1)  # 1 requête av
         </blockquote>
     </div>
     <div class="slide"><h2>Révisions</h2>
-        <p>Les vues sous forme de clases (class-based views)</p>
+        <p>Les vues sous forme de classes (class-based views)</p>
     </div>
     <div class="slide">
         <h2>Vues génériques</h2>
         <p>
             <ul>
-                <li>TemplateView</li>
+                <li>django.views.generic.<b>TemplateView</b></li>
                 <ul>
-                    <li>ListView</li>
-                    <li>DetailView</li>
+                    <li>django.views.generic.<b>ListView</b></li>
+                    <li>django.views.generic.<b>DetailView</b></li>
                 </ul>
             </ul>
         </p>
@@ -422,7 +422,7 @@ for expense in Expense.objects.select_related('user').get(pk=1)  # 1 requête av
         </p>
     </div>
     <div class="slide">
-        <h2>Les Mixins (1/2)</h2>
+        <h2>Les Mixins (2/2)</h2>
         <h3>Mixins d'édition</h3>
         <ul>
             <li>django.views.generic.edit.<b>FormMixin</b></li>
