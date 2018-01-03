@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Support de formation sur Django avancé</title>
+    <title>Support de formation sur Python pour développeur</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=1024, user-scalable=no">
@@ -45,17 +45,15 @@
             <br>
             <li>Attentes</li>
             <br>
-            <li>Installation de Python 3.5, PyCharm et Django 1.11</li>
+            <li>Installation de CPython 3 et PyCharm</li>
         </ul>
     </div>
     <div class="slide">
         <h2>Ressources</h2>
         <ul>
-            <li>Documentation de Django: <a href="https://docs.djangoproject.com/fr/1.11/">https://docs.djangoproject.com/fr/1.11/</a></li>
+            <li>Documentation de Python 3: <a href="https://docs.python.org/3/">https://docs.python.org/3/</a></li>
             <br>
-            <li>Django Snippets: <a href="https://djangosnippets.org/">https://djangosnippets.org/</a></li>
-            <br>
-            <li>Django Rest Framework: <a href="http://www.django-rest-framework.org/">http://www.django-rest-framework.org/</a></li>
+            <li>Source de CPython: <a href="https://github.com/python/cpython/tree/3.6">https://github.com/python/cpython/tree/3.6</a></li>
         </ul>
         <blockquote>
             <p>Read the Source, Luke</p>
@@ -63,549 +61,48 @@
         </blockquote>
     </div>
     <div class="slide">
-        <h2>Les modèles</h2>
-        <blockquote>Lorsque vous concevez des applications complexes, centralisez (autant que possible)
-            la logique "métier" dans les <b>modèles</b> et leurs <b>méthodes<b>
-        </blockquote>
-    </div>
-    <div class="slide">
-        <h2>Révisions rapides</h2>
+        <h2>Pourquoi Python?</h2>
         <ul>
-            <li>Models</li>
-            <br>
-            <li>Fields</li>
-            <br>
-            <li>Managers</li>
+            <li>Objectifs du language</li>
+            <li>Partis pris</li>
+            <li>Philosophie: Le Zen de Python</li>
         </ul>
     </div>
     <div class="slide">
-        <h2>Héritage de modèles</h2>
+        <h2>Forces et faiblesses du language</h2>
         <ul>
-            <li>abstract</li>
-            <br>
-            <li>Héritage multiple</li>
-            <br>
-            <li>proxy (modèles mandataires)</li>
-            <br>
-            <li>Imports circulaires</li>
+            <li>Faiblesses: Performance et Distribution</li>
+            <li>Comment mitiger les faiblesses</li>
+            <li>Forces: Maintenabilité, librairie standard et écosystème</li>
+            <li>Utilisations propices et déconseillées</li>
         </ul>
     </div>
     <div class="slide">
-        <h2>abstract</h2>
-        <p>👍 Ajouter des champs générique pour tous vos modèles</p>
-        <p>👎 Colonnes supplémentaires (pas optimal si données souvent vides)</p>
-        <p>👎 Pas d'héritage multiple avec abstract</p>
-        <pre>
-class DatedModel(Model):
-    class Meta:
-        abstract = True
-    created = DateTimeField(auto_now_add=True)
-    modified = DateTimeField(auto_now=True)
-
-class Company(DatedModel):
-    name = TextField()
-date = DatedModel()  # Objection!
-fedex = Company(name="Fedex")
-fedex.created
-        </pre>
-    </div>
-    <div class="slide">
-        <h2>Héritage multiple (1/2)</h2>
-        <p>Création d'un OneToOneField automatique vers le parent et l'enfant si il existe</p>
-        <pre>
-class Vehicle(DatedModel):
-    color = CharField()
-
-class Truck(Vehicle):
-    owner = ForeignKey(Company)
-        </pre>
-    </div>
-    <div class="slide">
-        <h2>Héritage multiple (2/2)</h2>
-        <p>Tous les champs de Vehicle seront aussi disponible dans Truck, même si les données se trouveront dans des <b>tables différentes</b></p>
-        <p>👍 Possibilité d'hériter de plusieurs classes, modèles de base (Vehicle) non-modifié et accessible</p>
-        <p>👍 Pratique pour étendre en conservant l'existant</p>
-        <p>👎 Jointures ou requêtes supplémentaires</p>
-        <p>👎 Peut complexifier le code (vérification d'existance de sous-objets)</p>
-        <pre>
-mon_camion = Truck(color='red', owner=fedex)
-mon_camion.color
-mon_camion.vehicle
-mon_camion.save()  # Pour obtenir l'ID
-mon_vehicule = Vehicle.objects.get(pk=mon_camion.id)
-assert mon_vehicule.truck == mon_camion
-        </pre>
-    </div>
-    <div class="slide">
-        <h2>proxy (modèles mandataires)</h2>
-        <a href="https://docs.djangoproject.com/fr/1.11/topics/db/models/#proxy-models">Doc Django</a>
-        <p>Permet de modifier le comportement d'un modèle sans changer la façon dont il stocke ses données</p>
-        <pre>
-class Car(Vehicle):
-    class Meta:
-        proxy = True
-    def __str__(self):
-        return "{} car".format(self.color)
-    def paint(self, color):
-        self.color = color
-        </pre>
-    </div>
-    <div class="slide">
-        <h2>Imports circulaires</h2>
-        <p>Si vous rencontrez le message d'erreur "Cannot import &lt;module&gt;", il peut s'agir d'un problème d'import circulaire</p>
-        <p>La solution consiste à importer le module dans la méthode où il est utilisée, plutôt qu'à la racine, en haut du fichier</p>
-        <p>Pour les clefs étrangères, plutôt que la classe elle-même, utilisez une chaîne contenant son nom</p>
-        <pre>
-class Truck(Vehicle):
-    owner = ForeignKey(Company)
-        </pre>
-        <p>Devient:</p>
-        <pre>
-class Truck(Vehicle):
-    owner = ForeignKey("Company")
-        </pre>
-    </div>
-    <div class="slide">
-        <h2>Création d'un champ personnalisé (1/2)</h2>
-        <p>👍 Les champs personnalisés permettent de stocker des données arbitraires tout en contrôlant la façon dont on les enregistre</p>
-        <p>👍 Peut engendrer des gains de performance spectaculaires dans ceraines circonstances</p>
-        <p>👎 Attention aux implémentations qui dépendent du moteur de base de données</p>
-        <p>👎 Dé-corrélation avec les données physiquement présentes dans la base</p>
-        <p>👎 Peut engendrer une certaine complexité: un niveau d'abstraction en plus (en trop?)</p>
-    </div>
-    <div class="slide">
-        <h2>Création d'un champ personnalisé (2/2)</h2>
-        <p>
-        <pre>
-class CharMaxlength25Field(models.Field):
-    def db_type(self, connection):
-        return 'char(25)'  # Type spécifique à Postgresql
-
-class BetterCharField(models.Field):
-    def __init__(self, max_length, *args, **kwargs):
-        self.max_length = max_length
-        super(BetterCharField, self).__init__(*args, **kwargs)
-
-    def db_type(self, connection):
-        return 'char(%s)' % self.max_length  # Version paramétrique
-
-    def get_prep_value(self, value):
-        return str(value)[:self.max_length]  # De Python vers la BDD
-
-    def to_python(self, value):
-        return str(value)  # De la BDD vers Python
-
-    def value_to_string(self, obj):
-        value = self._get_val_from_obj(obj)
-        return self.get_prep_value(value)
-        </pre>
-        <p>
-            <a href="http://cjlarose.com/2014/01/14/django-custom-field-version-number.html">http://cjlarose.com/2014/01/14/django-custom-field-version-number.html</a>
-        </p>
-        </p>
-    </div>
-    <div class="slide">
-        <h2>Création d'un Manager personnalisé (1/2)</h2>
-        <p>Chaque modèle possède un manager par défaut, il s'agit de l'attribut <i>objects</i></p>
-        <p>Un manager personnalisé permet de limiter (ou d'enrichir) le queryset lié à un modèle</p>
-        <p>Au lieu de requêter sur l'ensemble des objets comme on le fait sur <i>objects</i>, on se limite à un sous-ensemble</p>
-        <p>👍 Améliore la qualité du code, c'est à dire sa facilité de compréhension et sa maintenabilité</p>
-        <p>👎 Il faut se rappeler de l'utiliser 😅</p>
-    </div>
-    <div class="slide">
-        <h2>Création d'un Manager personnalisé (2/2)</h2>
-        <p>Par exemple, un manager personnalisé peut être utilisé pour cacher des objets au lieu de les supprimer</p>
-        <p>Cela permet d'ajouter une corbeille dans votre application, ou une fonction d'annulation de suppression</p>
-        <pre>
-            class ActiveUserManager(models.Manager):
-                def get_queryset(self):
-                    return super(UserManager, self).get_queryset().filter(active=True)
-
-            class User(models.Model):
-                # Fields
-                active = BooleanField(default=True)
-
-                # Managers
-                active_objects = ActiveManager()
-        </pre>
-    </div>
-    <div class="slide">
-        <h2>Mise en pratique</h2>
-        <p>
-            <ol>
-                <li>Créez un nouveau projet: application de gestion de finances personnelles</li>
-                <li>Créer un modèle Expense</li>
-                <li>Ce modèle doit stocker les données de façon efficiente et utiliser les éléments suivants:</li>
-                <ul>
-                    <li>Hériter d'un modèle abstrait: DatedModel</li>
-                    <li>Posséder un champ personnalisé: MoneyField qui stocke les somme d'argent sous forme d'entiers dans la base (avec les centimes)</li>
-                    <li>Utiliser un Manager personnalisé: active_objects</li>
-                </ul>
-            </ol>
-        </p>
-    </div>
-    <div class="slide">
-        <h2>Tests unitaires</h2>
-        <blockquote>
-            Les tests unitaires permettent de limiter les bugs induits et donc vous donnent confiance dans la robustesse de votre application
-        </blockquote>
-    </div>
-    <div class="slide">
-        <h2>Écrire des tests sous Django</h2>
-        <p>
-            Plusieurs classes existent pour réaliser des tests unitaires sous Django:
-            <ul>
-                <li>django.test.TestCase</li>
-                <ul>
-                    <li>django.test.TransactionTestCase</li>
-                    <ul>
-                        <li>django.test.LiveServerTestCase: Lance un vrai serveur Django ce qui permet de tester l'interface avec Selenium ou PhantomJS</li>
-                        <li>django.test.StaticLiveServerTestCase: Idem + fichiers statiques sans avoir besoin de lancer collectstatic</li>
-                    </ul>
-                </ul>
-            </ul>
-        </p>
-    </div>
-    <div class="slide">
-        <h2>Patching et Mocking</h2>
-        <p>
-            <ul>
-                <li>unittest.mock</li>
-                <li>unittest.patch</li>
-            </ul>
-        </p>
-    </div>
-    <div class="slide">
-        <h2>Couverture de code (code coverage)</h2>
-        <p>
-            L'outil <i>coverage</i><br>
-            <a href="https://coverage.readthedocs.io/en/coverage-4.4.2/">https://coverage.readthedocs.io/en/coverage-4.4.2/</a>
-            <pre>
-                # pip install coverage
-                coverage run manage.py test
-            </pre>
-        </p>
-        <p>PyCharm Professional intègre un outil de couverture de code</p>
-    </div>
-    <div class="slide">
-        <h2>Mise en pratique</h2>
-        <p>
-            Écrire les tests unitaires de notre application exemple
-        </p>
-        <h3>Bonus</h3>
-        <p>
-            Interfacer notre application avec <a href="http://fixer.io">fixer.io</a> et mocker la requête.
-        </p>
-    </div>
-    <div class="slide">
-        <h2>Requêtes avancées</h2>
-        <blockquote>
-            <p>L'ORM de Django permet de réconcilier le modèle Objet de Python avec le stockage SQL...</p>
-            <p>Au prix d'une multiplication des requêtes, qui peut ralentir considérablement notre application</p>
-            <p>Nous allons voir comment mitiger ce problème</p>
-        </blockquote>
-    </div>
-    <div class="slide">
-        <h2>Annotate: avantages et limites</h2>
-        <p>Annotate permet l'équivalent d'un <i>group by</i> en SQL</p>
-        <p>Compter le nombre de dépenses par utilisateur:</p>
-        <pre>
-from django.db.models import Count
-user = User.objects.all().annotate(Count('expense_set'))[0]
-user.expense_set__count
-        </pre>
-        <p>Compter le total par utilisateur:</p>
-        <pre>
-from django.db.models import Sum
-user = User.objects.all().annotate(total=Sum('expense_set__amount'))
-user.total
-        </pre>
-        <p>Une seule requête à chaque fois!</p>
-    </div>
-    <div class="slide">
-        <h2>Aggregate</h2>
-        <p>Aggregate permet d'aggréger des données en une seule par somme ou comptage</p>
-        <pre>
-from django.db.models import Sum
-User.objects.all().aggregate(grand_total=Sum('expense_set__amount'))
-        </pre>
-    </div>
-    <div class="slide">
-        <h2>Utilisation avancée de select_related et prefetch_related</h2>
-        <h3>select_related</h3>
-        <p>
-            <i>select_related</i> permet d'économiser une requête lorsqu'on accède à un objet lié à un autre par une clef étrangère
-            <pre>
-expense = Expense.objects.get(pk=1)  # 1 requête
-expense.user  # 1 requête
-
-expense = Expense.objects.select_related('user').get(pk=1)  # 1 requête
-expense.user  # Pas de requête!
-            </pre>
-        </p>
-    </div>
-    <div class="slide">
-        <h2>Utilisation avancée de select_related et prefetch_related</h2>
-        <h3>select_related</h3>
-        <p>
-            <i>select_related</i> permet d'économiser une requête lorsqu'on accède à un objet lié à un autre par une clef étrangère
-        <pre>
-for expense in Expense.objects.all()  # 1 requête
-    expense.user  # 1 requête à chaque fois!
-
-for expense in Expense.objects.select_related('user').get(pk=1)  # 1 requête avec jointure
-    expense.user  # Pas de requête!
-            </pre>
-        </p>
-    </div>
-    <div class="slide">
-        <h2>Utilisation avancée de select_related et prefetch_related</h2>
-        <h3>prefetch_related</h3>
-        <p>
-            <i>prefetch_related</i> permet d'éviter de multiplier les requêtes quand on accède à un OneToMany (ForeignKey inversée)
-            <pre>
-        for user in User.objects.all():  # 1 requête
-            for expense in user.expense_set.all():  # 1 requête par user!
-                print(expense.amount)
-
-        for user in User.objects.prefetch_related('expense_set').all():  # 2 requêtes: 1 pour User + 1 pour Expense
-            for expense in user.expense_set.all():  # Pas de requête!
-                print(expense.amount)
-            </pre>
-        </p>
-    </div>
-    <div class="slide"><h2>Mise en pratique</h2>
-        <p>Réduction du nombre de requêtes</p>
-    </div>
-    <!-- Jour 2 -->
-    <div class="slide">
-        <h2>Les vues</h2>
-        <blockquote>
-            Les vues sont l'adaptateur entre les modèles et l'affichage.
-            Elles permettent de mettre les données au format souhaité en sortie afin que ces dernières soient exploitables
-        </blockquote>
-    </div>
-    <div class="slide"><h2>Révisions</h2>
-        <p>Les vues sous forme de classes (class-based views)</p>
-    </div>
-    <div class="slide">
-        <h2>Vues génériques</h2>
-        <p>
-            <ul>
-                <li>django.views.generic.<b>TemplateView</b></li>
-                <ul>
-                    <li>django.views.generic.<b>ListView</b></li>
-                    <li>django.views.generic.<b>DetailView</b></li>
-                </ul>
-            </ul>
-        </p>
-    </div>
-    <div class="slide">
-        <h2>Les Mixins (1/2)</h2>
-        <h3>Mixins simples</h3>
-        <p>
-            <ul>
-                <li>django.views.generic.base.<b>ContextMixin</b></li>
-                <li>django.views.generic.base.<b>TemplateResponseMixin</b></li>
-            </ul>
-        </p>
-
-        <h3>Mixins mono-objets</h3>
-        <p>
-            <ul>
-                <li>django.views.generic.detail.<b>SingleObjectMixin</b></li>
-                <li>django.views.generic.detail.<b>SingleObjectTemplateResponseMixin</b></li>
-            </ul>
-        </p>
-
-        <h3>Mixins multi-objets</h3>
-        <p>
+        <h2>Spécificités propres</h2>
         <ul>
-            <li>django.views.generic.list.<b>MultipleObjectMixin</b></li>
-            <li>django.views.generic.list.<b>MultipleObjectTemplateResponseMixin</b></li>
-        </ul>
-        </p>
-    </div>
-    <div class="slide">
-        <h2>Les Mixins (2/2)</h2>
-        <h3>Mixins d'édition</h3>
-        <ul>
-            <li>django.views.generic.edit.<b>FormMixin</b></li>
-            <li>django.views.generic.edit.<b>ModelFormMixin</b></li>
-            <li>django.views.generic.edit.<b>ProcessFormView</b></li>
-            <li>django.views.generic.edit.<b>DeletionMixin</b></li>
+            <li>La syntaxe</li>
+            <li>Gestion de la mémoire</li>
+            <li>Compréhension de listes</li>
+            <li>Librairie standard</li>
+            <li>PIP</li>
         </ul>
     </div>
     <div class="slide">
-        <h2>Les middlewares (1/2)</h2>
-        <p>Le middleware, comme son nom l'indique ("le truc au milieu") se situe entre l'arrivée d'une requête et son traitement par la vue.</p>
-        <blockquote>Un middleware permet d'altérer très simplement le comportement global de Django</blockquote>
-    </div>
-    <div class="slide">
-        <h2>Les middlewares (2/2)</h2>
-        <p>Voilà la liste des middlewares utilisés par défaut en v1.11:</p>
+        <h2>Mise en pratique</h2>
         <ul>
-            <li>django.middleware.security.SecurityMiddleware</li>
-            <li>django.contrib.sessions.middleware.SessionMiddleware</li>
-            <li>django.middleware.common.CommonMiddleware</li>
-            <li>django.middleware.csrf.CsrfViewMiddleware</li>
-            <li>django.contrib.auth.middleware.AuthenticationMiddleware</li>
-            <li>django.contrib.messages.middleware.MessageMiddleware</li>
-            <li>django.middleware.clickjacking.XFrameOptionsMiddleware</li>
+            <li>Installation et configuration de CPython 3 et PyCharm</li>
+            <li>Hello, world!</li>
+            <li>Fizz Buzz en Python</li>
+            <li>Crawler web avec Requests et Beautiful Soup</li>
         </ul>
-        <p>La sécurité est un concept global, un seul oubli et votre application n'est plus sûre.</p>
-        <p>Les middleware sont donc particulièrement bien adaptés pour assurer la sécurité de votre application.</p>
-    </div>
-    <div class="slide"><h2>Mise en pratique</h2>
-        <h3>Création d'un mixin de vue générique et d'un middleware</h3>
-    </div>
-    <div class="slide">
-        <h2>Les templates</h2>
-        <blockquote>Les templates génèrent le code HTML. Evitez (autant que possible) d'y placer la moindre logique (a fortiori la logique "métier").</blockquote>
-    </div>
-    <div class="slide">
-        <h2>Révisions</h2>
-        <h3>Filters</h3>
-        <p>{{ expense.name|title }}</p>
-        <p>{{ expense.name|title|safe }}</p>
-        <h3>Tags</h3>
-        <p>{% block %}</p>
-        <p>{% include %}</p>
-        <p>{% render expense_form %}</p>
-    </div>
-    <div class="slide">
-        <h2>Filters personnalisés</h2>
-        <p>Les filtres permettent de modifier le format d'affichage d'un élément de façon générique</p>
-    </div>
-    <div class="slide">
-        <h2>Tags personnalisés</h2>
-        <p>Les tags personnalisés sont utiles pour injecter une logique personnalisée dans le template lorsque qu'on ne peut pas faire autrement.</p>
-        <p>À utiliser avec parcimonie.</p>
-    </div>
-    <div class="slide">
-        <h2>Mise en pratique</h2>
-        <h3>Création d'un filtre personnalisé</h3>
-    </div>
-    <div class="slide">
-        <h2>Sécurité avancée</h2>
-        <p>
-            <blockquote>
-                <p>Django possède un arsenal de protections contre les attaques courantes. Ces protections sont activées par défaut.</p>
-                <p>Il est néanmoins indispensable d'en connaître le fonctionnement et les limites.</p>
-                <p>D'autre part, c'est <u>vous</u> qui êtes responsables de l'accès aux données et leur cloisonnement par utilisateur.</p>
-            </blockquote>
-        </p>
-    </div>
-    <div class="slide">
-        <h2>Révisions</h2>
-        <h3>Protection contre le CSRF (csrf token)</h3>
-    </div>
-    <div class="slide">
-        <h2>Customisation de l'authentification</h2>
-        <ul>
-            <li>JWT: JSON Web Tokens</li>
-            <li>Clef d'API</li>
-        </ul>
-    </div>
-    <div class="slide">
-        <h2>Authentification par OAuth, SAML2</h2>
-        <p>Il s'agit de Single Sign On (SSO).</p>
-    </div>
-    <div class="slide">
-        <h2>Mise en pratique</h2>
-        <p>Sécuriser notre application et séparer les données de chaque utilisateur de façon sécurisée.</p>
-    </div>
-    <!-- Jour 3 -->
-    <div class="slide">
-        <h2>Migrations</h2>
-        <blockquote>
-            Les migrations permettent de synchroniser l'état de notre base de données avec l'état de notre code
-        </blockquote>
-    </div>
-    <div class="slide">
-        <h2>Migration de données: Python et SQL</h2>
-        <p>Les migrations de données permettent de réaliser une modification de données de façon <b>répétable</b>.</p>
-    </div>
-    <div class="slide">
-        <h2>Fusion de migrations</h2>
-        <p>Des migrations de schéma peuvent se retrouver sur des branches de versionning séparées et dépendre d'une même migration "mère"</p>
-        <p>Au moment de la fusion des branches (par un git merge, par exemple), ces migrations vont entrer en conflit car
-            l'outil de migration de Django sera incapable de déterminer quelle migration choisir</p>
-        <p>Dans ce cas, si les modifications concernent des tables différentes, il est possible de créer une migration supplémentaire
-qui servira à fusionner (merge) ces deux migrations "filles".</p>
-        <pre>python manage.py makemigrations --merge</pre>
-    </div>
-    <div class="slide">
-        <h2>Mise en pratique</h2>
-        <h3>Créer une migration de données personnalisée</h3>
-    </div>
-    <div class="slide">
-        <h2>Django Rest Framework</h2>
-        <p>DRF est un framework qui enrichit Django pour permettre de concevoir rapidement des API et Web Services.</p>
-    </div>
-    <div class="slide">
-        <h2>Les ViewSets</h2>
-        <p>Le concept de ViewSet permet de concevoir rapidement un ensemble de vues génériques.</p>
-        <p>Les ViewSets redirigent les requêtes suite à leur routage, et les dirigent vers le Serializer approprié.</p>
-    </div>
-    <div class="slide">
-        <h2>Les Serializers</h2>
-        <p>Dans Django Rest Framework, le Serializer remplace en quelque sorte le template HTML</p>
-        <p>Les Serializers définissent la façon dont les objets Django sont convertis depuis et
-            vers le format cible qui est en général le JSON, parfois le XML.</p>
-    </div>
-    <div class="slide">
-        <h2>Mise en pratique</h2>
-        <h3>Ajouter une API auto-documentée à notre application</h3>
-    </div>
-    <div class="slide">
-        <h2>Performance</h2>
-        <blockquote>
-            <ol>
-                <li>Make it work</li>
-                <li>Make it right</li>
-                <li>Make it fast</li>
-            </ol>
-        </blockquote>
-    </div>
-    <div class="slide">
-        <h2>Profiling</h2>
-        <p>À partir d'un certain niveau de complexité, il est impossible d'appréhender de visu les "points chauds" d'un programme</p>
-        <p>Pour identifier ces goulets d'étranglement, le profiling est un outil puissant et nécessaire</p>
-        <p><a href="https://docs.python.org/3/library/profile.html">https://docs.python.org/3/library/profile.html</a></p>
-    </div>
-    <div class="slide">
-        <h2>Django Debug Toolbar</h2>
-        <p>Un outil très intéressant permettant d'afficher les requêtes SQL brutes et d'analyser le temps écoulé pour chacune</p>
-    </div>
-    <div class="slide">
-        <h2>Gestion du cache</h2>
-        <p>
-            <a href="https://docs.djangoproject.com/en/1.11/topics/cache/">https://docs.djangoproject.com/en/1.11/topics/cache/</a>
-            Django s'interface par défaut avec les back-ends de cache suivants:
-        </p>
-        <p>
-            <ul>
-                <li>Memcache: Extrêmement rapide, distribué et volatile (limité à la RAM disponible)</li>
-                <li>La base de données: Rapide et persistant. Possibilité de déporter le cache sur une autre base pour éviter de charger la base principale</li>
-                <li>Le système de fichiers: Un peu plus lent, persistant et limité seulement à la capacité du disque</li>
-                <li>Mémoire locale: Rapide, non-persistant et non-distribué</li>
-                <li>"Dummy": Ne cache pas (!), est uniquement utilisé pour tester l'interface de cache</li>
-                <li>Redis: Disponible grâce au plugin <a href="https://github.com/niwinz/django-redis">django-redis</a></li>
-            </ul>
-        </p>
-        <p>
-            Il est aussi possible de créer son propre backend de cache si les backends par défaut ne conviennent pas à votre besoin
-        </p>
-    </div>
-    <div class="slide">
-        <h2>Mise en pratique</h2>
-        <h3>Améliorer les performances de notre application</h3>
     </div>
     <div class="slide">
         <h2>Gardons contact</h2>
         <p>
-            Sylvain Josserand - <a href="mailto:sylvain@intuitivo.fr">sylvain@intuitivo.fr</a></p><p><a href="http://intuitivo.fr">intuitivo.fr</a>
+            Sylvain Josserand - <a href="mailto:sylvain@intuitivo.fr">sylvain@intuitivo.fr</a>
+        </p>
+        <p>
+            <a href="https://intuitivo.fr">intuitivo.fr</a>
         </p>
         <h2>Conditions d'utilisation</h2>
         <p>
