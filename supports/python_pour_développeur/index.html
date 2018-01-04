@@ -70,6 +70,70 @@
         </ul>
     </div>
     <div class="slide">
+        <h2>Objectifs du language</h2>
+        <p>
+            <ul>
+                <li>Lisibilité du code source</li>
+                <li>Expressivité -> Exprimer des concepts avec moins de code</li>
+            </ul>
+        Permettre de créer des programmes clairs à petite et grande échelle.
+        </p>
+    </div>
+    <div class="slide">
+        <h2>Partis pris</h2>
+        <p>
+            <h3>Indentation significative</h3>
+            <pre>
+def hello():
+    print("Hello")
+            </pre>
+            <h3>Typage dynamique</h3>
+            <pre>
+toto = "Chaîne"
+toto = 42
+            </pre>
+            <h3>Gestion de la mémoire implicite par comptage de référence</h3>
+            <p>ET garbage collector pour les références cycliques</p>
+        </p>
+    </div>
+    <div class="slide">
+        <h2>Philosophie: Le Zen de Python</h2>
+        <p>
+        <pre>import this</pre>
+        <pre>Beautiful is better than ugly.
+Explicit is better than implicit.
+Simple is better than complex.
+Complex is better than complicated.
+Flat is better than nested.
+Sparse is better than dense.
+Readability counts.
+Special cases aren't special enough to break the rules.
+Although practicality beats purity.
+Errors should never pass silently.
+Unless explicitly silenced.
+In the face of ambiguity, refuse the temptation to guess.
+There should be one-- and preferably only one --obvious way to do it.
+Although that way may not be obvious at first unless you're Dutch.
+Now is better than never.
+Although never is often better than *right* now.
+If the implementation is hard to explain, it's a bad idea.
+If the implementation is easy to explain, it may be a good idea.
+Namespaces are one honking great idea -- let's do more of those!</pre>
+        </p>
+    </div>
+    <div class="slide">
+        <h2>Les différentes implémentations</h2>
+        <h3>CPython</h3>
+        <p>Comme son nom l'indique, l'interprêteur est ici écrit en C. Il est compilable sur toutes les plates-formes ou presque</p>
+        <p>Il s'agit de l'implémentation de référence utilisée par 99% des pythonistes</p>
+        <p>Le code source python est compilé (de façon transparente) en byte-code universel très proche du code source (.pyc), puis interprêté</p>
+        <p>Pas d'optimisation dans le byte-code (possibilité d'enlever les assertions)</p>
+        <h3>Pypy</h3>
+        <p>Python en Python.</p>
+        <p>Contre-intuitivement, cette implémentation permet d'atteindre des performances légèrement meilleures que CPython (dans certains cas)</p>
+        <p>Grâce à la compilation just-in-time</p>
+    </div>
+    <div class="slide">
         <h2>Forces et faiblesses du language</h2>
         <ul>
             <li>Faiblesses et comment les contourner</li>
@@ -77,6 +141,148 @@
             <li>Les forces: Maintenabilité, librairie standard et écosystème</li>
             <li>Où et quand utiliser Python plutôt qu'un autre language</li>
         </ul>
+    </div>
+    <div class="slide">
+        <h2>Faiblesses et comment les contourner</h2>
+        <h3>Les performances</h3>
+        <p>CPython étant interprêté ET dynamiquement typé, les performances en calcul brut ne sont pas au niveau du C</p>
+        <p>On observe en pratique un code 100x (en ordre de grandeur) plus lent que C sur des boucles imbriquées avec calcul arithmétique simple</p>
+        <h4>Mais!</h4>
+        <ul>
+            <li>Souvent, le traitement est limité par les I/O. Python gère bien ce type de workload.</li>
+            <li>Numpy permet de faire du calcul numérique rapide, en utilisant les instructions vectorielles du CPU, voir le GPU</li>
+            <li><a href="http://stsievert.com/blog/2016/07/01/numpy-gpu/">http://stsievert.com/blog/2016/07/01/numpy-gpu/</a></li>
+            <li>Cython permet de traduire le code Python en C, avec un typage statique optionel:
+                <ul>
+                    <li>Vitesse du C où on veut (dans les boucles imbriquées)</li>
+                    <li>On enlève des features de Python pour gagner en perfs ce qu'on pert en clarté et facilité de debugging</li>
+                </ul>
+            </li>
+            <li>Possibilité d'appeler des librairies DLL compilées nativement à partir de Python, grâce au module standard ctypes</li>
+            <li>On peut créer des extensions (modules) python écrits en C gràce à libpython. Exemple: decimal et une partie de la lib standard</li>
+        </ul>
+    </div>
+    <div class="slide">
+        <h2>Faiblesses et comment les contourner</h2>
+        <h3>La distribution</h3>
+        <p>Chaque programme nécessite d'installer l'interprêteur Python... dans une version compatible avec le programme.</p>
+        <h4>Mais!</h4>
+        <p>Py2exe (sous windows) et freeze (sous linux/mac) permettent de créer des exécutables contenant l'interprêteur + les libs + le programme</p>
+        <p>Chaque programme embarque son propre interprêteur et librairies. Mais on perd la portabilité, c'est triste</p>
+        <p>Qui utilise encore des applis lourdes en 2018? N'utilisez pas Python dans ce cas (sauf environnement entreprise)</p>
+    </div>
+    <div class="slide">
+        <h2>Faiblesses et comment les contourner</h2>
+        <h3>La GIL: Global Interpreter Lock</h3>
+        <p>Python ne permet pas à plusieurs threads d'accéder aux données simultanément. C'est triste</p>
+        <h4>Mais!</h4>
+        <p>On peut utiliser le module standard multiprocessing pour imiter le fonctionnement des threads avec des process.</p>
+        <p>Cette solution a un surcoût mémoire de plusieurs méga-octets par process Python.</p>
+        <p>On peut utiliser des systèmes asynchrones distribués basées sur les files d'attentes (queues) telles que RQ ou Celery sur RabbitMQ.</p>
+        <p>Avec l'avantage dans ce cas de limiter la charge du serveur en pic au prix d'une latence accrue dans les traitements.</p>
+    </div>
+    <div class="slide">
+        <h2>Les pièges à éviter</h2>
+        <h3>Types mutables</h3>
+        <p>La plupart des types sont immutables, mais certains (list, dict et objets custom) sont mutables</p>
+        <p>Que fait ce programme?</p>
+        <pre>
+def append(element, lst=()):
+    lst = lst + (element, )
+    return lst
+
+
+print(append(1))
+print(append(2))</pre>
+        <p>Que fait ce programme?</p>
+        <pre>
+def append(element, lst=[]):
+    lst.append(element)
+    return lst
+
+
+print(append(1))
+print(append(2))</pre>
+    </div>
+    <div class="slide">
+        <h2>Les pièges à éviter</h2>
+        <h3>Collisions de noms</h3>
+        <p>Dans l'example précédant, l'argument lst ne peux pas être list car c'est un mot-clé réservé en Python.</p>
+        <p>On peut contourner ce problème en renommant: on ajoute un _ après ou on change la façon d'écrire.</p>
+        <ul>
+            <li>list devient lst ou list_ (attention, _list serait considéré par convention comme une variable de classe privée)</li>
+            <li>class devient cls ou klass</li>
+        </ul>
+        <h3>Dépendances circulaires</h3>
+        <p>On importe un module A depuis un module B qui a lui-même besoin du module A</p>
+        <p>La solution consiste à retarder le chargement d'un des modules en l'important au plus près de là où on l'utilise (dans la classe ou fonction)</p>
+    </div>
+    <div class="slide">
+        <h2>Les pièges à éviter</h2>
+        <h3>Python 2</h3>
+        <p>Solution: utiliser Python 3 ;)</p>
+        <p>Python 2 cesse d'être maintenu en 2020. C'est bientôt</p>
+        <p><a href="https://pythonclock.org/" >https://pythonclock.org/</a></p>
+        <h3>lambda</h3>
+        <p>Si votre code utilise lambda dans des situations non-triviales, c'est potentiellement le signe d'un manque de clarté</p>
+        <p>lambda peut toujours être remplacé par une vraie fonction. Les fonctions sont des objets comme les autres</p>
+        <h3>eval</h3>
+        <p>La première règle de l'instruction eval est: on n'utilise pas l'instruction eval</p>
+        <p>Utilisez plutôt hasattr, getattr et setattr</p>
+    </div>
+    <div class="slide">
+        <h2>Les forces: Maintenabilité, librairie standard et écosystème</h2>
+        <h3>Maintenabilité</h3>
+        <p>Plutôt simple à maintenir, assez peu de code "boilerplate" comme gestion de mémoire</p>
+        <p>Le code ressemble à ce qu'il fait d'un point de vue "métier"</p>
+    </div>
+    <div class="slide">
+        <h2>Les forces: Maintenabilité, librairie standard et écosystème</h2>
+        <h3>Librairie standard</h3>
+        <p>La librairie standard est fantastique. Exemples:</p>
+        <p>Module http: Un serveur web (de fichiers, non sécurisé) en 2 lignes:</p>
+        <pre>from http.server import SimpleHTTPRequestHandler, HTTPServer
+HTTPServer(('', 8000), SimpleHTTPRequestHandler).serve_forever()</pre>
+        <p>Module ctypes: appel de printf en quelques lignes:</p>
+        <pre>from ctypes import cdll
+libc = cdll.LoadLibrary("libc.so.6")
+libc.printf(b"toto %d. But use format instead.\n", 42)</pre>
+    </div>
+    <div class="slide">
+        <h2>Les forces: Maintenabilité, librairie standard et écosystème</h2>
+        <h3>Écosystème</h3>
+        <pre>pip install &lt;package&gt;</pre>
+        <p>Des milliers de packages sont disponibles et installables en 1 commande(un peu comme CPAN pour Perl)</p>
+        <p>Possibilité d'héberger son propre dépôt PIP privé</p>
+        <p>Django: framework web extrêmement puissant</p>
+        <p>Anaconda: Package de modules et d'applications pour le traitement de données en Python:
+        <ul>
+            <li>Calculs numériques performants: Numpy, Scipy</li>
+            <li>"Big" data: Pandas, Numpy</li>
+            <li>Data representation: Bokeh, GraphViz</li>
+            <li>Machine learning: sklearn (scikit-learn)</li>
+        </ul>
+        </p>
+        <p>Requests: Accès au web en mode client. Requêtes HTTP, authentication, cookies, ...</p>
+        <p>Beautiful Soup: Parsing HTML puissant et élégant</p>
+    </div>
+    <div class="slide">
+        <h2>Où et quand utiliser Python plutôt qu'un autre language</h2>
+        <p>En conclusion</p>
+        <p><em>N'utilisez pas</em> Python pour des programmes:
+        <ul>
+            <li>Installables par le grand public</li>
+            <li>Contraints par leur environnement (mémoire limitée, CPU lent)</li>
+        </ul>
+        </p>
+        <p><em>Utilisez-le</em> plutôt pour des programmes:
+        <ul>
+            <li>Dont la vitesse de développement est plus importante que celle d'exécution</li>
+            <li>Installés sur vos serveurs ou au sein de votre entreprise</li>
+            <li>Qui ont besoin de fonctionnalités spécifiques: IA, deep learning, web/HTTP</li>
+            <li>Que vous allez devoir maintenir</li>
+        </ul>
+        </p>
     </div>
     <div class="slide">
         <h2>Spécificités propres</h2>
@@ -89,6 +295,35 @@
         </ul>
     </div>
     <div class="slide">
+        <h2>La syntaxe</h2>
+        <p>L'indentation est significative</p>
+        <p>Minimum de symboles cabalistiques (Perl): pas de $, pas de ; en fin de ligne.</p>
+        <p>Proche du C dans la structure du code: fonctions, boucles, if</p>
+    </div>
+    <div class="slide">
+        <h2>Gestion de la mémoire</h2>
+        <p>Fonctionne par comptage de référence. Un objet qui n'est plus accessible est supprimé et la mémoire qu'il occupait est rendue au pool</p>
+        <p>Toute variable en Python est accédée par référence</p>
+        <p>Optimisations parfois étranges: les entiers de 0 à 256 sont stockés une seule fois chacun.</p>
+        <p>Ils sont immutables donc pas de problème a priori</p>
+        <p>Attention à la comparaison par <em>is</em> cependant:</p>
+        <pre>a=12
+            b=12
+            a is b  # True
+        a=257
+        b=257
+            a is b  # False</pre>
+    </div>
+    <div class="slide">
+        <h2>Compréhension de listes</h2>
+    </div>
+    <div class="slide">
+        <h2>Librairie standard</h2>
+    </div>
+    <div class="slide">
+        <h2>PIP</h2>
+    </div>
+    <div class="slide">
         <h2>Mise en pratique</h2>
         <ul>
             <li>Installation et configuration de CPython 3 et PyCharm</li>
@@ -99,7 +334,22 @@
         </ul>
     </div>
     <div class="slide">
-        <h2>Mise en pratique plus poussée, à la carte</h2>
+        <h2>Installation et configuration de CPython 3 et PyCharm</h2>
+    </div>
+    <div class="slide">
+        <h2>Maîtrise de l'IDE: Débugger et profiler</h2>
+    </div>
+    <div class="slide">
+        <h2>Scripting système</h2>
+    </div>
+    <div class="slide">
+        <h2>Déploiement d'applications avec Fabric</h2>
+    </div>
+    <div class="slide">
+        <h2>Crawler web avec Requests et Beautiful Soup</h2>
+    </div>
+    <div class="slide">
+        <h2>Mise en pratique avancée</h2>
         <ul>
             <li>Encodage: Unicode et UTF8</li>
             <li>Client MySQL</li>
@@ -108,6 +358,24 @@
             <li>Créer une API auto-documentée avec Django Rest Framework</li>
             <li>Gestion de la mémoire en Python, le compteur de références et le GC</li>
         </ul>
+    </div>
+    <div class="slide">
+        <h2>Encodage: Unicode et UTF8</h2>
+    </div>
+    <div class="slide">
+        <h2>Client MySQL</h2>
+    </div>
+    <div class="slide">
+        <h2>Multi-threading</h2>
+    </div>
+    <div class="slide">
+        <h2>Tests unitaires</h2>
+    </div>
+    <div class="slide">
+        <h2>Créer une API auto-documentée avec Django Rest Framework</h2>
+    </div>
+    <div class="slide">
+        <h2>Gestion de la mémoire en Python, le compteur de références et le GC</h2>
     </div>
     <div class="slide">
         <h2>Gardons contact</h2>
@@ -119,7 +387,7 @@
         </p>
         <h2>Conditions d'utilisation</h2>
         <p>
-            L'utilisation de ce support et sa copie <b>dans un but non lucratif</b> est autorisée, à condition de conserver cette diapositive.
+            L'utilisation de ce support et sa copie dans un but non lucratif est autorisée, à condition de conserver cette diapositive.
         </p>
         <p>
             L'utilisation commerciale de ce support n'est pas autorisée sans mon autorisation préalable. Contactez-moi.
