@@ -206,29 +206,30 @@ print(append(2))</pre>
     </div>
     <div class="slide">
         <h2>Les pièges à éviter</h2>
-        <h3>Collisions de noms</h3>
-        <p>Dans l'example précédant, l'argument lst ne peux pas être list car c'est un mot-clé réservé en Python.</p>
-        <p>On peut contourner ce problème en renommant: on ajoute un _ après ou on change la façon d'écrire.</p>
-        <ul>
-            <li>list devient lst ou list_ (attention, _list serait considéré par convention comme une variable de classe privée)</li>
-            <li>class devient cls ou klass</li>
-        </ul>
-        <h3>Dépendances circulaires</h3>
-        <p>On importe un module A depuis un module B qui a lui-même besoin du module A</p>
-        <p>La solution consiste à retarder le chargement d'un des modules en l'important au plus près de là où on l'utilise (dans la classe ou fonction)</p>
-    </div>
-    <div class="slide">
-        <h2>Les pièges à éviter</h2>
         <h3>Python 2</h3>
         <p>Solution: utiliser Python 3 ;)</p>
         <p>Python 2 cesse d'être maintenu en 2020. C'est bientôt</p>
         <p><a href="https://pythonclock.org/" >https://pythonclock.org/</a></p>
         <h3>lambda</h3>
-        <p>Si votre code utilise lambda dans des situations non-triviales, c'est potentiellement le signe d'un manque de clarté</p>
-        <p>lambda peut toujours être remplacé par une vraie fonction. Les fonctions sont des objets comme les autres</p>
+        <p>Si votre code utilise lambda dans des situations non-triviales, c'est potentiellement le signe d'un manque de clarté.</p>
+        <p>lambda peut toujours être remplacé par une vraie fonction. Les fonctions sont des objets comme les autres.</p>
         <h3>eval</h3>
-        <p>La première règle de l'instruction eval est: on n'utilise pas l'instruction eval</p>
-        <p>Utilisez plutôt hasattr, getattr et setattr</p>
+        <p>La première règle de l'instruction eval est: on n'utilise pas l'instruction eval.</p>
+        <p>Utilisez plutôt hasattr, getattr et setattr.</p>
+    </div>
+    <div class="slide">
+        <h2>Les pièges à éviter</h2>
+        <h3>Collisions de noms</h3>
+        <p>Dans l'example précédent, l'argument lst ne peut pas s'appeler list car c'est un mot-clé réservé en Python.</p>
+        <p>Python utilise peu de caractères spéciaux et utilise des mots-clés à la place, d'où le risque accru de collision.</p>
+        <p>On peut contourner ce problème en renommant: on ajoute un _ final.</p>
+        <ul>
+            <li>list devient lst ou list_ (attention, _list serait considéré comme une variable de classe privée)</li>
+            <li>class devient cls ou klass</li>
+        </ul>
+        <h3>Dépendances circulaires</h3>
+        <p>On importe un module A depuis un module B qui a lui-même besoin du module A</p>
+        <p>La solution consiste à retarder le chargement d'un des modules en l'important au plus près de là où on l'utilise (dans la classe ou fonction)</p>
     </div>
     <div class="slide">
         <h2>Les forces: Maintenabilité, librairie standard et écosystème</h2>
@@ -247,6 +248,7 @@ HTTPServer(('', 8000), SimpleHTTPRequestHandler).serve_forever()</pre>
         <pre>from ctypes import cdll
 libc = cdll.LoadLibrary("libc.so.6")
 libc.printf(b"toto %d. But use format instead.\n", 42)</pre>
+        <p>Un bon réflexe avant de développer du code non-métier est de chercher dans la librairie standard, puis les packages PIP.</p>
     </div>
     <div class="slide">
         <h2>Les forces: Maintenabilité, librairie standard et écosystème</h2>
@@ -268,7 +270,6 @@ libc.printf(b"toto %d. But use format instead.\n", 42)</pre>
     </div>
     <div class="slide">
         <h2>Où et quand utiliser Python plutôt qu'un autre language</h2>
-        <p>En conclusion</p>
         <p><em>N'utilisez pas</em> Python pour des programmes:
         <ul>
             <li>Installables par le grand public</li>
@@ -290,6 +291,7 @@ libc.printf(b"toto %d. But use format instead.\n", 42)</pre>
             <li>La syntaxe</li>
             <li>Gestion de la mémoire</li>
             <li>Les décorateurs</li>
+            <li>Les générateurs</li>
         </ul>
     </div>
     <div class="slide">
@@ -322,6 +324,23 @@ a is b  # False</pre>
 def index(request)
     return 'Hello, world!'
         </pre>
+    </div>
+    <div class="slide">
+        <h2>Les générateurs et itérateurs</h2>
+        <p>Permet de traiter l'information en mode flux.</p>
+        <p>Les données traitées n'ont pas besoin d'être résidentes en mémoire => parfait pour le Big Data</p>
+        <pre>docs = get_huge_document_list()
+encoded_docs = []
+for document in docs:
+    encoded_docs.append(doc.encode('rot13'))
+return encoded_docs</pre>
+        <p>Cet exemple fonctionne mais alloue temporairement 1)la liste de tous les documents à traiter et 2) la liste des documents traités.</p>
+        <p>Ces données peuvent dépasser la capacité de mémoire disponible => MemoryError</p>
+        <pre>for document in iter_huge_document_list():
+    yield doc.encode('rot13')</pre>
+        <p>Dans ce cas, on alloue au plus 1 document et 1 résultat.</p>
+        <p>Dans l'idéal, la chaîne de traitement est entièrement composée de générateurs nourrisant des itérateurs.</p>
+        <p>Si ce n'est pas le cas, on peut convertir simplement un itérateur en liste et vice versa.</p>
     </div>
     <div class="slide">
         <h2>Trucs et astuces</h2>
