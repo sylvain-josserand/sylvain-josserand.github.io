@@ -289,9 +289,7 @@ libc.printf(b"toto %d. But use format instead.\n", 42)</pre>
         <ul>
             <li>La syntaxe</li>
             <li>Gestion de la mémoire</li>
-            <li>Compréhension de listes</li>
-            <li>Librairie standard</li>
-            <li>PIP</li>
+            <li>Les décorateurs</li>
         </ul>
     </div>
     <div class="slide">
@@ -308,21 +306,34 @@ libc.printf(b"toto %d. But use format instead.\n", 42)</pre>
         <p>Ils sont immutables donc pas de problème a priori</p>
         <p>Attention à la comparaison par <em>is</em> cependant:</p>
         <pre>a=12
-            b=12
-            a is b  # True
-        a=257
-        b=257
-            a is b  # False</pre>
+b=12
+a is b  # True
+a=257
+b=257
+a is b  # False</pre>
     </div>
     <div class="slide">
-        <h2>Compréhension de listes</h2>
+        <h2>Les décorateurs</h2>
+        <p>Les décorateurs sont une particularité de Python, permettant de modifier une fonction par une fonction</p>
+        <p>Proche du concept mathématique de composition: g o f</p>
+        <p>Pratique pour éviter la duplication, souvent utilisé dans le web:</p>
+        <pre>
+@login_required
+def index(request)
+    return 'Hello, world!'
+        </pre>
     </div>
     <div class="slide">
-        <h2>Librairie standard</h2>
+        <h2>Trucs et astuces</h2>
+        <h3>Affectations multiples ou swapping</h3>
+        <pre>x, y = y, x</pre>
+        <h3>Comparaisons multiples</h3>
+        <pre>3 < x < 5</pre>
+        <h3>Index négatifs</h3>
+        <pre>l = [1,2,3]
+l[-1] == 3</pre>
     </div>
-    <div class="slide">
-        <h2>PIP</h2>
-    </div>
+
     <div class="slide">
         <h2>Mise en pratique</h2>
         <ul>
@@ -335,12 +346,34 @@ libc.printf(b"toto %d. But use format instead.\n", 42)</pre>
     </div>
     <div class="slide">
         <h2>Installation et configuration de CPython 3 et PyCharm</h2>
+        <p>Site Web officiel de la fondation Python: <a href="https://www.python.org/">https://www.python.org/</a></p>
+        <p>Télécharger Python 3.6 pour Windows: <a href="https://www.python.org/ftp/python/3.6.4/python-3.6.4-amd64.exe">https://www.python.org/ftp/python/3.6.4/python-3.6.4-amd64.exe</a> </p>
+        <p>Sous Linux: <pre>apt/yum install python3</pre></p>
+        <p>Sous Mac OS: <pre>brew install python3</pre></p>
+        <p>Pyenv permet de gérer plusieurs <em>versions</em> de python en parallèle</p>
+        <h3>Virtualenv</h3>
+        <p>Virtualenv crée un environnement séparé contenant l'interprêteur Python + les packages nécessaires à chacune de vos applications</p>
+        <h3>Pycharm</h3>
+        <p>Pycharm Community Edition: <a href="https://www.jetbrains.com/pycharm/download/">https://www.jetbrains.com/pycharm/download/</a></p>
+        <p>Pycharm gère vos environnements virtuels et vos packages PIP</p>
+        <h3>Autres IDE</h3>
+        <p>Eclipse + pydev</p>
+        <p>Sublime text + Anaconda</p>
     </div>
     <div class="slide">
         <h2>Maîtrise de l'IDE: Débugger et profiler</h2>
+        <p>Stack trace: Le module traceback</p>
+        <p>Débuggueur et points d'arrêt</p>
+        <p>Profile et performance, multi process</p>
     </div>
     <div class="slide">
         <h2>Scripting système</h2>
+        <p>Modules <em>os</em> et <em>sys</em></p>
+        <pre>os.path.join('/home', 'toto') => /home/toto</pre>
+        <pre>os.environ => Variables d'environnement dans un dictionnaire</pre>
+        <pre>os.listdir() => Liste les fichiers et répertoires du répertoire courant</pre>
+        <pre>os.walk() => Liste les fichiers et répertoires sous forme d'arbre</pre>
+        <pre>sys.argv => Arguments du programme dans une liste</pre>
     </div>
     <div class="slide">
         <h2>Déploiement d'applications avec Fabric</h2>
